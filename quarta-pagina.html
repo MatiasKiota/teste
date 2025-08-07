@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dados para Finalizar Pedido - Delícias da Mamis</title>
+  <link rel="stylesheet" href="stylequarta.css" />
+</head>
+<body>
+
+  <div class="container">
+    <h2>Preencha seus dados abaixo para continuar com o seu pedido.</h2>
+
+    <form id="form-dados">
+      <div class="input-group">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStheAhJjj3FQdfccCU1uzzwM4_ZOkbmE4aIA&s" alt="Celular Ícone" />
+        <input type="text" placeholder="DDD + SEU NÚMERO" name="telefone" inputmode="tel" pattern="[0-9\s()+-]{10,}" required />
+      </div>
+
+      <div class="input-group">
+        <img src="https://i.pinimg.com/originals/f9/18/bc/f918bc7ddb4658dcf4ce70a21b3fd31d.jpg" alt="Nome Ícone" />
+        <input type="text" placeholder="DIGITE SEU NOME" name="nome" required />
+      </div>
+
+      <button type="submit" class="btn-continuar">Continuar</button>
+    </form>
+  </div>
+
+  <button class="voltar" onclick="window.history.back()">←</button>
+
+  <script>
+    // Ao carregar a página, preencher os campos com localStorage separados (nome e telefone)
+    window.addEventListener('DOMContentLoaded', () => {
+      const nome = localStorage.getItem('nome');
+      const telefone = localStorage.getItem('telefone');
+
+      if (nome) document.querySelector('input[name="nome"]').value = nome;
+      if (telefone) document.querySelector('input[name="telefone"]').value = telefone;
+    });
+
+    const form = document.getElementById('form-dados');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Pega os dados atuais do formulário
+      const nome = form.nome.value.trim();
+      const telefone = form.telefone.value.trim();
+
+      // Salva os dados no localStorage separados
+      localStorage.setItem('nome', nome);
+      localStorage.setItem('telefone', telefone);
+
+      // Redireciona para a próxima página
+      window.location.href = 'quinta-pagina.html';
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.9">
+  
+  <title>Finalizar Pedido - Delícias da Mamis</title>
+  <link rel="stylesheet" href="stylefinalizar.css">
+  <style>
+  
+    /* Modal - janela centralizada, rosa, animada */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 77, 136, 0.15);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 10000;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { transform: translateY(80px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-box {
+      background: white;
+      border-radius: 30px;
+      padding: 30px 25px 35px;
+      max-width: 460px;
+      width: 90%;
+      box-shadow: 0 10px 45px rgba(255,77,136,0.3);
+      color: #ff4d88;
+      font-weight: 600;
+      font-size: 1.15em;
+      text-align: center;
+      position: relative;
+      user-select: none;
+      animation: pulsePop 1s ease;
+    }
+    @keyframes pulsePop {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    .gif-mamis {
+      width: 130px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 25px #ffb6c1;
+      animation: bounce 2s infinite ease-in-out;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .modal-box button.btn-close {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #fff0f5;
+      border: none;
+      font-size: 26px;
+      font-weight: 900;
+      color: #ff4d88;
+      border-radius: 50%;
+      padding: 10px 14px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #ff69b4;
+      animation: piscaX 1.5s infinite;
+      z-index: 1;
+      transition: transform 0.2s;
+    }
+    .modal-box button.btn-close:hover {
+      transform: scale(1.15) rotate(8deg);
+      background-color: #ffe0ed;
+    }
+    @keyframes piscaX {
+      0% { box-shadow: 0 0 10px #ff99cc; }
+      50% { box-shadow: 0 0 20px #ff1493, 0 0 30px #ff69b4; }
+      100% { box-shadow: 0 0 10px #ff99cc; }
+    }
+    .botao-rosa {
+      background: linear-gradient(45deg, #ff69b4, #ff4d88);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-weight: 700;
+      font-size: 1em;
+      padding: 12px 28px;
+      margin: 0 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 77, 136, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .botao-rosa:hover {
+      transform: scale(1.1) rotate(-2deg);
+      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.7);
+    }
+    #inputObservacao {
+      display: none;
+      margin-top: 20px;
+      width: 90%;
+      height: 80px;
+      border-radius: 15px;
+      border: 2px solid #ffbad2;
+      padding: 10px;
+      font-family: 'Poppins', sans-serif;
+      resize: none;
+      font-size: 1em;
+      color: #ff4d88;
+    }
+    #btnEnviarObs {
+      display: none;
+      margin-top: 15px;
+    }
+  </style>
+
+  <!-- MODAL DE OBSERVAÇÃO -->
+  <div class="modal-overlay" id="popupObservacao" aria-hidden="true">
+    <div class="modal-box" role="alert">
+      <button aria-label="Fechar popup" class="btn-close" onclick="fecharPopupObservacao()">×</button>
+      <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2xrYWF0d2g3aHQzdzU0NzNiZjQwNHpjbDc5dGh5ZzR1bjk0cTk0YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/Mey4gd5Ft47VcQAFMl/giphy.gif" alt="Gif fofo" class="gif-mamis">
+      <h2>Você tem alguma observação para o pedido?</h2>
+      <div style="margin-top: 20px;">
+        <button id="btnSimObs" class="botao-rosa">Sim</button>
+        <button id="btnNaoObs" class="botao-rosa" style="background:#d63384;">Não</button>
+      </div>
+      <textarea id="inputObservacao" placeholder="Digite sua observação aqui..."></textarea>
+      <button id="btnEnviarObs" class="botao-rosa">Enviar</button>
+    </div>
+  </div>
+
+  <div class="resumo">
+    <h2>Resumo do seu pedido 🍰</h2>
+    <div id="itens"></div>
+    <div class="total">Total: R$ <span id="total"></span></div>
+
+    <button id="finalizarBtn" type="button">Finalizar Pedido</button>
+  </div>
+
+  <script>
+    const itens = JSON.parse(localStorage.getItem('itensCarrinho')) || [];
+    const total = localStorage.getItem('valorPedido') || '0.00';
+
+    const divItens = document.getElementById('itens');
+    const spanTotal = document.getElementById('total');
+
+    if (itens.length === 0) {
+      divItens.innerHTML = "<p>O carrinho está vazio.</p>";
+    } else {
+      itens.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <p><strong>${item.nome}</strong></p>
+          <p>Quantidade: ${item.quantidade}</p>
+          <p>Preço unitário: ${item.preco}</p>
+        `;
+        divItens.appendChild(div);
+      });
+    }
+
+    spanTotal.textContent = parseFloat(total).toFixed(2).replace('.', ',');
+
+    // Remover redirecionamento do botão finalizar para abrir modal
+    document.getElementById('finalizarBtn').addEventListener('click', () => {
+      document.getElementById('popupObservacao').classList.add('show');
+      document.getElementById('popupObservacao').setAttribute('aria-hidden', 'false');
+    });
+
+    // Botões do modal
+    const btnSim = document.getElementById('btnSimObs');
+    const btnNao = document.getElementById('btnNaoObs');
+    const inputObs = document.getElementById('inputObservacao');
+    const btnEnviar = document.getElementById('btnEnviarObs');
+    const popup = document.getElementById('popupObservacao');
+    const btnClose = popup.querySelector('.btn-close');
+
+    function fecharPopupObservacao() {
+      popup.classList.remove('show');
+      popup.setAttribute('aria-hidden', 'true');
+      inputObs.style.display = 'none';
+      btnEnviar.style.display = 'none';
+      btnSim.disabled = false;
+      btnNao.disabled = false;
+      inputObs.value = '';
+    }
+
+    btnSim.addEventListener('click', () => {
+      inputObs.style.display = 'block';
+      btnEnviar.style.display = 'inline-block';
+      btnSim.disabled = true;
+      btnNao.disabled = true;
+    });
+
+    btnNao.addEventListener('click', () => {
+      localStorage.setItem('observacaoPedido', 'Nenhuma observação.');
+      window.location.href = 'quarta-pagina.html'; // troque pelo link correto
+    });
+
+    btnEnviar.addEventListener('click', () => {
+      const texto = inputObs.value.trim();
+      if (texto === '') {
+        alert('Por favor, digite sua observação.');
+        return;
+      }
+      localStorage.setItem('observacaoPedido', texto);
+      window.location.href = 'quarta-pagina.html'; // troque pelo link correto
+    });
+
+    btnClose.addEventListener('click', fecharPopupObservacao);
+  </script>
+
+</body>
+<button class="voltar" onclick="window.history.back()">←</button>
+
+</html>

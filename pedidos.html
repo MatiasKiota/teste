@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pedidos - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjZCHFc0z7C4WwuB8kNw53RjwcLjI2aRnzcA&s') no-repeat center center fixed;
+      background-size: cover;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(255, 240, 250, 0.95);
+      z-index: -1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d63384;
+      font-size: 2.8em;
+      margin-top: 30px;
+      text-shadow: 2px 2px 5px #fff;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .legenda {
+      text-align: center;
+      color: #aa0055;
+      font-size: 1.48em;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 3px #fff;
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; text-shadow: 0 0 8px #ff99cc; }
+      100% { opacity: 0.7; }
+    }
+
+    .pedido {
+      background: #ffe0f0;
+      border: 2px dashed #ff99cc;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 0 20px #ffb6d9;
+      animation: floatUp 0.6s ease;
+      position: relative;
+    }
+
+    .pedido:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px #ff80bf;
+    }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pedido p {
+      margin: 8px 0;
+      color: #660033;
+      font-size: 1em;
+    }
+
+    .voltar {
+      display: block;
+      margin: 40px auto 30px;
+      padding: 12px 28px;
+      background-color: #ff66cc;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      width: 160px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 0 15px #ff99cc;
+      transition: 0.3s;
+    }
+
+    .voltar:hover {
+      background-color: #ff33aa;
+      box-shadow: 0 0 25px #ffd6ec;
+    }
+
+    .nenhum-pedido {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 18px;
+      color: #c2185b;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #fff;
+    }
+
+    #listaPedidos {
+      padding: 20px;
+    }
+
+    /* Estrelas animadas */
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Confetes */
+    .confetti {
+      position: fixed;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      z-index: 1;
+      opacity: 0.9;
+      animation: confettiFall 5s linear infinite;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    /* Ícones animados */
+    .icon {
+      position: fixed;
+      font-size: 28px;
+      animation: floatIcon 6s infinite ease-in-out alternate;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes floatIcon {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-30px) rotate(15deg); }
+    }
+  </style>
+</head>
+<body>
+
+   <!-- Estrelas -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Ícones animados -->
+  <div class="icon" style="top: 10%; left: 5%;">🧁</div>
+  <div class="icon" style="top: 20%; left: 85%;">🍰</div>
+  <div class="icon" style="top: 50%; left: 10%;"></div>
+  <div class="icon" style="top: 70%; left: 80%;">🍩</div>
+
+  <h2> Seus Pedidos </h2>
+  <p class="legenda">Aqui estão os pedidos já realizados 🍬💝</p>
+
+  <div id="listaPedidos"></div>
+
+  <a href="index.html" class="voltar">← Voltar</a>
+
+  <script>
+    // Estrelas
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDuration = (1 + Math.random() * 2) + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Confete
+    function criarConfete() {
+      for (let i = 0; i < 40; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.backgroundColor = ['#ff69b4', '#ffc0cb', '#ffb6c1'][Math.floor(Math.random() * 3)];
+        confetti.style.animationDuration = (3 + Math.random() * 2) + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 6000);
+      }
+    }
+
+    // Utilidade
+    // Utilidade para pegar parâmetros da URL
+function getQueryParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(param) || '';
+}
+
+// Tenta pegar nome e telefone da URL
+let nome = getQueryParam('nome');
+let telefone = getQueryParam('telefone');
+
+// Se não tiver na URL, pega do localStorage (do cliente que está usando)
+if (!nome || !telefone) {
+  nome = localStorage.getItem('nome') || '';
+  telefone = localStorage.getItem('telefone') || '';
+}
+
+if (!nome || !telefone) {
+  document.getElementById('listaPedidos').innerHTML = '<p class="nenhum-pedido">Parâmetros inválidos ou cliente não identificado.</p>';
+} else {
+  const pedidosDoCliente = JSON.parse(localStorage.getItem(`pedidos_${telefone}`)) || [];
+
+  const pedidosFiltrados = pedidosDoCliente.filter(pedido =>
+    pedido.nome && pedido.nome.toLowerCase() === nome.toLowerCase()
+  );
+
+  if (pedidosFiltrados.length === 0) {
+    document.getElementById('listaPedidos').innerHTML = '<p class="nenhum-pedido">Nenhum pedido encontrado para você 😢</p>';
+  } else {
+    const container = document.getElementById('listaPedidos');
+    pedidosFiltrados.forEach((pedido, index) => {
+      const itensTexto = Array.isArray(pedido.itens)
+        ? pedido.itens.map(i => `${i.quantidade}x ${i.nome}`).join(', ')
+        : (pedido.itens || 'Não informado');
+
+      const div = document.createElement('div');
+      div.className = 'pedido';
+      div.innerHTML = `
+        <p><strong>Pedido #${index + 1}</strong></p>
+        <p><strong>Data:</strong> ${pedido.data || 'Não informado'}</p>
+        <p><strong>Itens:</strong> ${itensTexto}</p>
+        <p><strong>Total:</strong> ${pedido.total || 'Não informado'}</p>
+        <p><strong>Entrega:</strong> ${pedido.entrega || 'Não informado'}</p>
+        <p><strong>Pagamento:</strong> ${pedido.formaPagamento || pedido.pagamento || 'Não informado'}</p>
+        <p><strong>Observação:</strong> ${pedido.observacao || 'Nenhuma'}</p>
+        <p><strong>Endereço:</strong><br> ${pedido.endereco ? pedido.endereco.replace(/\n/g, '<br>') : 'Não informado'}</p>
+      `;
+      container.appendChild(div);
+    });
+    criarConfete();
+  }
+}
+
+  </script>
+</body>
+</html>

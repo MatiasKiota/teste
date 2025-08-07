@@ -1,0 +1,241 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('https://img.freepik.com/fotos-gratis/fundo-violeta-textura-aquarela_1083-172.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Quicksand', sans-serif;
+  color: #4c004c;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.95);
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: aparecer 0.5s ease-in-out;
+}
+
+h2 {
+  text-align: center;
+  color: #8e44ad;
+  margin-bottom: 25px;
+}
+
+h3 {
+  color: #a940a9;
+  margin-top: 25px;
+  border-bottom: 1px solid #f3c8f3;
+  padding-bottom: 5px;
+}
+
+p {
+  font-size: 16px;
+  margin: 6px 0;
+}
+
+button.btn-confirmar {
+  background-color: #25d366;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 30px;
+  margin-top: 25px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+button.btn-confirmar:hover {
+  background-color: #128c7e;
+}
+
+button.voltar {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  font-weight: bold;
+  color: #fff0f5;
+  cursor: pointer;
+  z-index: 1000;
+  animation: brilhoSeta 1.5s infinite alternate;
+  text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4, 0 0 25px #ffaadd;
+  transition: transform 0.3s ease;
+}
+
+@keyframes brilhoSeta {
+  from {
+    transform: scale(1);
+    text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4;
+  }
+  to {
+    transform: scale(1.15);
+    text-shadow: 0 0 16px #ffaadd, 0 0 24px #ff69b4;
+  }
+}
+
+/* ✨ Popup de agradecimento */
+.popup-confirmacao {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 240, 255, 0.95);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  animation: aparecer 1s ease-in-out;
+}
+
+.popup-confirmacao.ativo {
+  display: flex;
+}
+
+.popup-conteudo {
+  text-align: center;
+  background: #fff0fa;
+  border: 4px dashed #ff99cc;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #ff99cc, 0 0 40px #ff66b2;
+  animation: brilhoPopup 2s infinite alternate;
+}
+
+.popup-conteudo img {
+  width: 200px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.popup-conteudo h3 {
+  font-size: 26px;
+  color: #b10085;
+  margin: 10px 0;
+}
+
+.popup-conteudo p {
+  font-size: 18px;
+  color: #6e006e;
+}
+
+@keyframes brilhoPopup {
+  from {
+    box-shadow: 0 0 10px #ffb6d9, 0 0 20px #ff99cc;
+  }
+  to {
+    box-shadow: 0 0 30px #ff99cc, 0 0 60px #ff66b2;
+  }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
+.fechar-popup {
+  position: absolute;
+  top: 185px;
+  right: 540px;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: #b10085;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-weight: bold;
+  user-select: none;
+  z-index: 10000;
+  filter: drop-shadow(0 0 3px #ff99cc);
+}
+
+.fechar-popup:hover {
+  color: #ff66b2;
+  filter: drop-shadow(0 0 8px #ff66b2);
+  transform: scale(1.2);
+}
+
+.botao-voltar-inicio {
+  margin-top: 20px;
+  padding: 12px 25px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  background: #8e44ad; /* roxo vibrante */
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(142, 68, 173, 0.6);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.botao-voltar-inicio:hover {
+  background: #6c2f9b;
+  box-shadow: 0 6px 20px rgba(108, 47, 155, 0.8);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

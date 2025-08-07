@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.8">
+  <title>Opções de Entrega - Delícias da Mamis</title>
+  <link rel="stylesheet" href="stylequinta.css" />
+</head>
+<body>
+
+  <div class="container">
+    <h2>Escolha uma opção de entrega</h2>
+
+    <section class="opcao" onclick="selecionarEntregaSimples('Delivery')">
+      <h3>Delivery</h3>
+      <p><strong>Pedido Mínimo:</strong> R$ 10,00</p>
+      <p><strong>Tempo estimado:</strong> 30 min.</p>
+    </section>
+
+    <section class="opcao" onclick="selecionarEntregaSimples('Retirar no Balcão')">
+      <h3>Retirar no Local</h3>
+      <p><strong>Pedido Mínimo:</strong> R$ 1,00</p>
+      <p><strong>Tempo estimado:</strong> 20 min.</p>
+    </section>
+
+    <section class="opcao agendamento">
+      <h3>Agendamento</h3>
+      <div class="sub-opcao" onclick="abrirModal('Agendamento Delivery')">
+        <h4>Agendamento Delivery</h4>
+        <p><strong>Pedido Mínimo:</strong> R$ 10,00</p>
+      </div>
+      <div class="sub-opcao" onclick="abrirModal('Agendamento Retirada')">
+        <h4>Agendamento Retirada</h4>
+        <p><strong>Pedido Mínimo:</strong> R$ 1,00</p>
+      </div>
+    </section>
+
+    <button class="btn-continuar" onclick="selecionarEntregaSimples('Não informado')">Continuar</button>
+  </div>
+
+  <!-- Modal Agendamento -->
+  <div class="modal" id="modalAgendamento">
+    <div class="modal-content">
+      <span class="fechar" onclick="fecharModal()">&times;</span>
+      <h3 id="modalTitulo">Agendamento</h3>
+
+      <label for="data">Data:</label>
+      <input type="date" id="data" required>
+
+      <label for="horario">Horário:</label>
+      <select id="horario"></select>
+
+      <button onclick="confirmarAgendamento()" class="btn-confirmar">Confirmar Agendamento</button>
+    </div>
+  </div>
+
+  <script>
+    let tipoAgendamento = '';
+
+    function selecionarEntregaSimples(tipo) {
+      localStorage.setItem('tipoEntrega', tipo);
+      localStorage.removeItem('agendamentoData');
+      localStorage.removeItem('agendamentoHora');
+
+      if (tipo === 'Delivery') {
+        window.location.href = 'sexta-pagina.html';
+      } else if (tipo === 'Retirar no Balcão') {
+        window.location.href = 'retirada.html';
+      } else {
+        window.location.href = 'sexta-pagina.html';
+      }
+    }
+
+    function abrirModal(tipo) {
+      tipoAgendamento = tipo;
+      document.getElementById('modalTitulo').textContent = tipo;
+      document.getElementById('modalAgendamento').style.display = 'flex';
+      preencherHorarios();
+    }
+
+    function fecharModal() {
+      document.getElementById('modalAgendamento').style.display = 'none';
+    }
+
+    function preencherHorarios() {
+      const select = document.getElementById('horario');
+      select.innerHTML = '';
+      let hora = 10;
+      let minuto = 0;
+
+      while (hora < 24 || (hora === 24 && minuto === 0)) {
+        const h = hora.toString().padStart(2, '0');
+        const m = minuto.toString().padStart(2, '0');
+        const option = document.createElement('option');
+        option.value = `${h}:${m}`;
+        option.textContent = `${h}:${m}`;
+        select.appendChild(option);
+
+        minuto += 40;
+        if (minuto >= 60) {
+          minuto = 0;
+          hora++;
+        }
+      }
+    }
+
+    function confirmarAgendamento() {
+      const data = document.getElementById('data').value;
+      const horario = document.getElementById('horario').value;
+
+      if (!data || !horario) {
+        alert('Por favor, selecione a data e o horário.');
+        return;
+      }
+
+      localStorage.setItem('tipoEntrega', tipoAgendamento);
+      localStorage.setItem('agendamentoData', data);
+      localStorage.setItem('agendamentoHora', horario);
+
+      if (tipoAgendamento === 'Agendamento Delivery') {
+        window.location.href = 'sexta-pagina.html';
+      } else if (tipoAgendamento === 'Agendamento Retirada') {
+        window.location.href = 'retirada.html';
+      }
+    }
+  </script>
+
+  <button class="voltar" onclick="window.history.back()">←</button>
+
+</body>
+</html>
+

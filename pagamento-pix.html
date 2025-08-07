@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento via PIX - Delícias da Mamis</title>
+  <link rel="stylesheet" href="stylepix.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="pix-container">
+    <img src="https://artpoin.com/wp-content/uploads/2023/09/artpoin-logo-pix.png" class="logo-pix" alt="Logo Pix" />
+    <h2>Pagamento via PIX 💜</h2>
+    <p class="valor-pagar">Valor a pagar: <strong>R$ <span id="valorTotal">0,00</span></strong></p>
+    <p class="instrucao">Escaneie o QR Code abaixo ou copie a chave PIX para concluir seu pedido:</p>
+    <div class="qrcode">
+      <img src="https://i.ibb.co/hxwBv00K/qrcode-pix-png.png" alt="QR Code PIX">
+    </div>
+    <div class="chave-pix">
+      <strong>Chave PIX:</strong><br />
+      <span>(11) 94203-9879</span>
+    </div>
+    <button id="btnJaPaguei" class="btn-confirmar">Já paguei</button>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalConfirmacao" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+      <h3>Confirmação do Pedido</h3>
+      <p>Após clicar em "Confirmar pedido", o pedido será enviado por uma mensagem automática via WhatsApp . Não se esqueça de enviar o comprovante, sem o comprovante não será possível retirar/entregar o produto!</p>
+      <button id="btnConfirmarPedido" class="btn-confirmar">Confirmar pedido</button>
+    </div>
+  </div>
+
+  <!-- Confirmação -->
+  <div class="popup-confirmacao" id="popupConfirmacao" style="display: none;">
+    <div class="popup-conteudo">
+      <button class="botao-fechar" onclick="fecharPopup()">❌</button>
+      <img src="https://media.giphy.com/media/DyQrKMpqkAhNHZ1iWe/giphy.gif" alt="Pedido confirmado" />
+      <h3>Pedido Confirmado! 💖</h3>
+      <p>Agora é só aguardar a mensagem da Mamis 🍬</p>
+      <button class="botao-voltar-inicio" onclick="window.location.href='index.html'">Voltar ao Início</button>
+    </div>
+  </div>
+
+  <script>
+    const valorPedido = parseFloat(localStorage.getItem('valorPedido')) || 0;
+    const entrega = localStorage.getItem('tipoEntrega');
+    const cepCliente = localStorage.getItem('cep') || '';
+    const cepLoja = '06160201';
+
+    function calcularFrete(cepDestino) {
+      const diff = Math.abs(parseInt(cepDestino.replace(/\D/g, '')) - parseInt(cepLoja));
+      if (diff <= 100) return 0;
+      if (diff <= 300) return 5;
+      if (diff <= 600) return 10;
+      if (diff <= 1000) return 15;
+      return 20;
+    }
+
+    let frete = 0;
+    if (entrega === 'Delivery' || entrega === 'Agendamento Delivery') {
+      frete = calcularFrete(cepCliente);
+    }
+
+    const valorTotal = valorPedido + frete;
+    document.getElementById('valorTotal').textContent = valorTotal.toFixed(2).replace('.', ',');
+
+    document.getElementById('btnJaPaguei').addEventListener('click', () => {
+      document.getElementById('modalConfirmacao').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('btnConfirmarPedido').addEventListener('click', () => {
+      document.getElementById('popupConfirmacao').style.display = 'flex';
+
+      setTimeout(() => {
+        const get = (key) => localStorage.getItem(key) || 'Não informado';
+        const itens = JSON.parse(localStorage.getItem('itensCarrinho')) || [];
+        const itensTexto = itens.map(i => `${i.quantidade}x ${i.nome}`).join(', ') || 'Nenhum item';
+
+        const entregaTexto = (() => {
+          if (entrega === 'Agendamento Delivery') {
+            return `Agendado para entrega em ${get('agendamentoData')} às ${get('agendamentoHora')}`;
+          }
+          if (entrega === 'Delivery') return 'Entrega por delivery';
+          if (entrega === 'Agendamento Retirada') {
+            return `Agendado para retirada em ${get('agendamentoData')} às ${get('agendamentoHora')}`;
+          }
+          if (entrega === 'Retirar no Balcão') return 'Retirar no balcão';
+          return 'Não informado';
+        })();
+
+
+      
+        const pedido = {
+          nome: get('nome'),
+          celular: get('telefone'),
+          entrega: entregaTexto,
+          itens: itens,
+          frete: frete,
+          total: valorTotal.toFixed(2),
+          pagamento: 'PIX',
+          data: new Date().toLocaleString(),
+          observacao: get('observacaoPedido'),
+          endereco: (entrega === 'Retirar no Balcão' || entrega === 'Agendamento Retirada')
+  ? 'Rua Zumbi dos Palmares, 140 - Bandeiras, Osasco - SP, CEP 06160-201'
+  : `Rua ${get('rua')}, Nº ${get('numero')}, ${get('bairro')}, ${get('cidade')} - CEP: ${get('cep')}\nComplemento: ${get('complemento')}\nReferência: ${get('referencia')}`
+
+        };
+
+        // Salvar no localStorage por número
+        const tel = pedido.celular;
+       // Verifica se já foi salvo usando uma flag
+if (!localStorage.getItem('pedidoSalvoPix')) {
+  const chave = `pedidos_${tel}`;
+  const listaPedidos = JSON.parse(localStorage.getItem(chave) || '[]');
+  listaPedidos.push(pedido);
+  localStorage.setItem(chave, JSON.stringify(listaPedidos));
+  localStorage.setItem('pedidoSalvoPix', 'true'); // Marcar como já salvo
+}
+
+        // WhatsApp
+        let enderecoTexto = '';
+
+if (entrega === 'Retirar no Balcão' || entrega === 'Agendamento Retirada') {
+  enderecoTexto = `📍 *Local da Retirada:*
+Rua Zumbi dos Palmares, 140  
+Bairro Bandeiras - Osasco - SP  
+CEP 06160-201`;
+} else {
+  enderecoTexto = `📍 *Endereço para Entrega:*
+Rua ${get('rua')}, Nº ${get('numero')}  
+${get('bairro')} - ${get('cidade')}  
+CEP: ${get('cep')}
+Complemento: ${get('complemento')}
+Referência: ${get('referencia')}`;
+}
+
+const msg = `🍬 *Novo Pedido - Delícias da Mamis* 🍬
+
+👤 *Nome:* ${pedido.nome}
+📞 *Celular:* ${pedido.celular}
+📦 *Entrega:* ${pedido.entrega}
+🧁 *Itens:* ${itensTexto}
+🚚 *Frete:* R$ ${frete.toFixed(2).replace('.', ',')}
+💰 *Total:* R$ ${valorTotal.toFixed(2).replace('.', ',')}
+
+${enderecoTexto}
+
+📝 *Observação:* ${pedido.observacao}
+
+*Por favor, envie o comprovante do PIX aqui mesmo 💜*`;
+
+// Descontar do estoque os itens comprados
+itens.forEach(item => {
+  const chaveEstoque = "estoque_" + item.nome;
+  const estoqueAtual = parseInt(localStorage.getItem(chaveEstoque)) || 0;
+  const novoEstoque = Math.max(estoqueAtual - item.quantidade, 0);
+  localStorage.setItem(chaveEstoque, novoEstoque);
+});
+        const url = `https://wa.me/5511942039879?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+
+        document.getElementById('modalConfirmacao').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }, 500);
+    });
+
+    function fecharPopup() {
+      document.getElementById('popupConfirmacao').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

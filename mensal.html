@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=10">
+
+  <title>📦 Ganhos Mensais - Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #fff0f5, #ffe6f0);
+      color: #4a004d;
+      margin: 0;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 30px;
+      color: #e60073;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .painel-resumo {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      box-shadow: 0 0 20px rgba(255, 153, 204, 0.3);
+    }
+
+    .resumo-texto {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    input[type="month"] {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-top: 15px;
+    }
+
+    button.pulsar {
+      background-color: #ff3399;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      animation: pulse 1.5s infinite;
+      margin-top: 10px;
+    }
+
+    button.pulsar:hover {
+      background-color: #cc0066;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .cliente-card {
+      background: #fff;
+      border-left: 8px solid #ff66b2;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 15px;
+      max-width: 600px;
+      box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+      text-align: left;
+    }
+
+    .cliente-card h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #e60073;
+    }
+
+    .pedido span {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .sem-pedidos {
+      font-size: 1.1rem;
+      color: #888;
+      margin-top: 30px;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .clique-estrela {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: url('https://cdn-icons-png.flaticon.com/512/1828/1828884.png') no-repeat center;
+      background-size: contain;
+      pointer-events: none;
+      animation: estrela 0.6s ease-out forwards;
+    }
+
+    @keyframes estrela {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(2); opacity: 0; }
+    }
+    .btn-voltar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 18px;
+      font-size: 15px;
+      background-color: #ff99cc;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+    
+    
+  </style>
+</head>
+<body>
+<script>
+  document.body.addEventListener("click", function (e) {
+    if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT") {
+      const estrela = document.createElement("div");
+      estrela.className = "clique-estrela";
+      estrela.style.top = `${e.clientY - 10}px`;
+      estrela.style.left = `${e.clientX - 10}px`;
+      document.body.appendChild(estrela);
+      setTimeout(() => estrela.remove(), 600);
+    }
+  });
+</script>
+
+<h1>📦 Painel de Ganhos Mensais - Mamis</h1>
+<a class="btn-voltar" href="todos-pedidos.html">← Voltar</a>
+<div class="painel-resumo">
+  <div class="resumo-texto" id="resumoTexto">Carregando resumo...</div>
+  <button class="pulsar" onclick="mostrarPedidosDoMes()">📋 Ver Pedidos do Mês</button><br>
+  <input type="month" id="seletorMes">
+</div>
+<div id="listaPedidos" class="escondido"></div>
+
+<script>
+  const listaPedidosDiv = document.getElementById("listaPedidos");
+  const resumoTexto = document.getElementById("resumoTexto");
+  const seletorMes = document.getElementById("seletorMes");
+
+  seletorMes.addEventListener("change", () => {
+    const mesSelecionado = seletorMes.value;
+    if (mesSelecionado) {
+      carregarResumo(mesSelecionado);
+      listaPedidosDiv.classList.add("escondido");
+    }
+  });
+
+  function carregarResumo(mesAno) {
+    let totalPedidos = 0;
+    let totalValor = 0;
+    const [ano, mes] = mesAno.split("-");
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const chave = localStorage.key(i);
+      if (chave.startsWith("pedidos_")) {
+        try {
+          const pedidos = JSON.parse(localStorage.getItem(chave)) || [];
+          pedidos.forEach(p => {
+            if (!p.data) return;
+            if (p.data.includes(`/${mes}/${ano}`)) {
+              totalPedidos++;
+              const valor = parseFloat((p.total || "0").replace("R$", "").replace(",", ".").trim());
+              totalValor += isNaN(valor) ? 0 : valor;
+            }
+          });
+        } catch (e) {}
+      }
+    }
+    resumoTexto.innerHTML = `📅 <strong>Mês: ${mes}/${ano}</strong> 🧋 <strong>Pedidos: ${totalPedidos}</strong> 💰 <strong>Total: R$ ${totalValor.toFixed(2).replace(".", ",")}</strong>`;
+  }
+
+  function mostrarPedidosDoMes() {
+    const mesSelecionado = seletorMes.value || new Date().toISOString().slice(0, 7);
+    carregarPedidos(mesSelecionado);
+    listaPedidosDiv.classList.remove("escondido");
+    listaPedidosDiv.classList.add("fade-in");
+  }
+
+  function carregarPedidos(mesAno) {
+    listaPedidosDiv.innerHTML = "";
+    let encontrouPedidos = false;
+    const [ano, mes] = mesAno.split("-");
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const chave = localStorage.key(i);
+      if (chave.startsWith("pedidos_")) {
+        const telefone = chave.replace("pedidos_", "");
+        let pedidos = [];
+        try {
+          pedidos = JSON.parse(localStorage.getItem(chave));
+        } catch (e) { pedidos = []; }
+
+        pedidos.forEach((pedido) => {
+          if (!pedido.data) return;
+          if (pedido.data.includes(`/${mes}/${ano}`)) {
+            const itensTexto = Array.isArray(pedido.itens) ? pedido.itens.map(i => `${i.quantidade}x ${i.nome}`).join(', ') : pedido.itens || "N/A";
+            const divPedido = document.createElement("div");
+            divPedido.className = "pedido";
+            divPedido.innerHTML = `<span><strong>Data:</strong> ${pedido.data}</span><span><strong>Itens:</strong> ${itensTexto}</span><span><strong>Total:</strong> ${pedido.total || "N/A"}</span><span><strong>Entrega:</strong> ${pedido.entrega || "N/A"}</span><span><strong>Pagamento:</strong> ${pedido.pagamento || "Pix"}</span><span><strong>Observação:</strong> ${pedido.observacao || "Nenhuma"}</span><span><strong>Endereço:</strong><br>${pedido.endereco ? pedido.endereco.replace(/\n/g, '<br>') : "N/A"}</span>`;
+            const container = document.createElement("div");
+            container.className = "cliente-card";
+            container.innerHTML = `<h2>Cliente: ${pedido.nome || "Cliente sem nome"} - Tel: ${telefone}</h2>`;
+            container.appendChild(divPedido);
+            listaPedidosDiv.appendChild(container);
+            encontrouPedidos = true;
+          }
+        });
+      }
+    }
+
+    if (!encontrouPedidos) {
+      listaPedidosDiv.innerHTML = '<div class="sem-pedidos">Nenhum pedido encontrado para este mês.</div>';
+    }
+  }
+
+  const hoje = new Date();
+  const mesAtual = hoje.toISOString().slice(0, 7);
+  seletorMes.value = mesAtual;
+  carregarResumo(mesAtual);
+</script>
+</body>
+</html>

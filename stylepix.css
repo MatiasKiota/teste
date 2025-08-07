@@ -1,0 +1,275 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('https://e0.pxfuel.com/wallpapers/757/399/desktop-wallpaper-pastel-colors-background-pastel-green.jpg') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.pix-container {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(255, 192, 203, 0.6);
+  animation: fadeInUp 1.2s ease;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo-pix {
+  width: 120px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+h2 {
+  color: #7a4081;
+  font-weight: 600;
+  text-shadow: 0 0 6px #ffb6d1;
+  animation: brilhoTitulo 2s ease-in-out infinite alternate;
+}
+
+@keyframes brilhoTitulo {
+  0% { text-shadow: 0 0 8px #ffa3c4; }
+  100% { text-shadow: 0 0 20px #ff69b4; }
+}
+
+.instrucao {
+  color: #333;
+  margin: 20px 0 15px;
+}
+
+.qrcode img {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.chave-pix {
+  margin-top: 20px;
+  font-size: 1.1em;
+  background-color: #fff3f7;
+  padding: 10px;
+  border-radius: 10px;
+  color: #333;
+  box-shadow: 0 0 8px rgba(255, 182, 193, 0.3);
+}
+
+.chave-pix span {
+  font-weight: bold;
+  color: #cc3366;
+  animation: pisca 1.5s infinite alternate;
+}
+
+@keyframes pisca {
+  from { opacity: 1; }
+  to { opacity: 0.6; }
+}
+
+.btn-confirmar {
+  margin-top: 30px;
+  background: linear-gradient(to right, #ff5ca1, #ffa7c6);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 12px #ffaadd;
+}
+
+.btn-confirmar:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #ff6fbf, #ff90b3);
+  box-shadow: 0 0 18px #ff90b3;
+}
+
+button.voltar {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  font-weight: bold;
+  color: #fff0f5;
+  cursor: pointer;
+  z-index: 1000;
+  animation: brilhoSeta 1.5s infinite alternate;
+  text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4, 0 0 25px #ffaadd;
+  transition: transform 0.3s ease;
+}
+
+@keyframes brilhoSeta {
+  from {
+    transform: scale(1);
+    text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4;
+  }
+  to {
+    transform: scale(1.15);
+    text-shadow: 0 0 16px #ffaadd, 0 0 24px #ff69b4;
+  }
+}
+
+/* Modal Styles */
+#modalConfirmacao {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+#modalConfirmacao > div {
+  background: linear-gradient(to bottom right, #ffd3e6, #fff0f5);
+  border-radius: 25px;
+  max-width: 420px;
+  padding: 30px 25px;
+  box-shadow: 0 0 30px #ff8ac6, 0 0 50px #ffaadd;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  color: #6a1b4d;
+  animation: popUp 0.4s ease-out;
+}
+
+@keyframes popUp {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+#modalConfirmacao h2, #modalConfirmacao h3 {
+  color: #b3306d;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px #ffc1e0;
+}
+
+#modalConfirmacao p {
+  color: #5a2340;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  text-shadow: 0 0 3px #ffe4ee;
+}
+
+#btnConfirmarPedido {
+  background: linear-gradient(to right, #ff5ca1, #ffa7c6);
+  color: white;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 12px #ffaadd;
+}
+
+#btnConfirmarPedido:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #ff6fbf, #ff90b3);
+  box-shadow: 0 0 20px #ff90b3;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.popup-confirmacao {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 240, 255, 0.95);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-conteudo {
+  text-align: center;
+  background: #fff0fa;
+  border: 4px dashed #ff99cc;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #ff99cc, 0 0 40px #ff66b2;
+  animation: brilhoPopup 2s infinite alternate;
+  position: relative;
+}
+
+.popup-conteudo img {
+  width: 200px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.popup-conteudo h3 {
+  font-size: 26px;
+  color: #b10085;
+  margin: 10px 0;
+}
+
+.popup-conteudo p {
+  font-size: 18px;
+  color: #6e006e;
+  margin-bottom: 20px;
+}
+
+.botao-voltar-inicio {
+  margin-top: 10px;
+  padding: 12px 25px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  background: #8e44ad;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(142, 68, 173, 0.6);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.botao-voltar-inicio:hover {
+  background: #6c2f9b;
+  box-shadow: 0 6px 20px rgba(108, 47, 155, 0.8);
+}
+
+.botao-fechar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  background: transparent;
+  border: none;
+  color: #b10085;
+  cursor: pointer;
+}

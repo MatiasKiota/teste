@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.9">
+  <title>Pagamento - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="stylepagamento.css" />
+</head>
+<body>
+
+  <div class="container">
+    <button class="voltar" onclick="window.history.back()">← Voltar</button>
+    <h2>Pagamento</h2>
+
+    <div class="opcoes-pagamento">
+
+      <section>
+        <h3>Pagar Online</h3>
+
+        <div class="opcao" tabindex="0" onclick="irParaPix()">
+          <img src="https://t4.ftcdn.net/jpg/07/04/71/75/360_F_704717584_66pmpeTKQMoEnlo06hpYKeUhPJ6SnhND.jpg" alt="Pix" />
+          <span>Pix</span>
+        </div>
+      </section>
+
+      <section>
+        <h3>Pagar na Retirada</h3>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('Dinheiro')">
+          <img src="https://png.pngtree.com/png-clipart/20220628/ourlarge/pngtree-dollar-money-cash-cartoon-png-image_5332868.png" alt="Dinheiro" />
+          <span>Dinheiro</span>
+        </div>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('Visa Débito')">
+          <img src="https://i.pinimg.com/564x/25/03/a6/2503a6b5d1576502b6a17ede48a3da7c.jpg" alt="Visa Débito" />
+          <span>Visa Débito</span>
+        </div>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('Visa Crédito')">
+          <img src="https://i.pinimg.com/564x/25/03/a6/2503a6b5d1576502b6a17ede48a3da7c.jpg" alt="Visa Crédito" />
+          <span>Visa Crédito</span>
+        </div>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('Elo Débito')">
+          <img src="https://i.pinimg.com/564x/25/03/a6/2503a6b5d1576502b6a17ede48a3da7c.jpg" alt="Elo Débito" />
+          <span>Elo Débito</span>
+        </div>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('Elo Crédito')">
+          <img src="https://i.pinimg.com/564x/25/03/a6/2503a6b5d1576502b6a17ede48a3da7c.jpg" alt="Elo Crédito" />
+          <span>Elo Crédito</span>
+        </div>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('MasterCard Crédito')">
+          <img src="https://i.pinimg.com/564x/25/03/a6/2503a6b5d1576502b6a17ede48a3da7c.jpg" alt="MasterCard Crédito" />
+          <span>MasterCard Crédito</span>
+        </div>
+
+        <div class="opcao" tabindex="0" onclick="irParaConfirmacao('MasterCard Débito')">
+          <img src="https://i.pinimg.com/564x/25/03/a6/2503a6b5d1576502b6a17ede48a3da7c.jpg" alt="MasterCard Débito" />
+          <span>MasterCard Débito</span>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    function irParaPix() {
+      localStorage.setItem('formaPagamento', 'Pix');
+      window.location.href = 'resumo-pix.html';
+    }
+
+    function irParaConfirmacao(metodo) {
+      localStorage.setItem('formaPagamento', metodo);
+      window.location.href = 'pagina-confirmacao.html';
+    }
+  </script>
+
+</body>
+</html>

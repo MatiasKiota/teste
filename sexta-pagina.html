@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.9">
+  <title>Endereço de Entrega - Delícias da Mamis</title>
+
+  <!-- Fonte aconchegante -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- CSS separado -->
+  <link rel="stylesheet" href="stylesexta.css" />
+</head>
+<body>
+
+  <div class="form-box">
+    <button class="voltar" onclick="window.history.back()">← Voltar</button>
+    <h2>Agora só falta o seu endereço para adoçar o caminho até você 🍬</h2>
+
+    <form id="formEndereco" onsubmit="salvarEndereco(event)">
+      <div class="input-group">
+        <input type="text" id="cep" placeholder=" " required onblur="buscarCEP()" />
+        <label for="cep">CEP</label>
+        <a class="link-cep" href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank">Não sei meu CEP</a>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="cidade" placeholder=" " required />
+        <label for="cidade">Cidade</label>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="bairro" placeholder=" " required />
+        <label for="bairro">Bairro</label>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="rua" placeholder=" " required />
+        <label for="rua">Rua</label>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="numero" placeholder=" " required />
+        <label for="numero">Número</label>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="complemento" placeholder=" " />
+        <label for="complemento">Complemento</label>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="referencia" placeholder=" " />
+        <label for="referencia">Referência (Opcional)</label>
+      </div>
+
+      <button type="submit">Confirmar Endereço</button>
+    </form>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    // Preenche os campos com localStorage ao carregar
+    window.onload = () => {
+      const campos = ['cep', 'cidade', 'bairro', 'rua', 'numero', 'complemento', 'referencia'];
+      campos.forEach(campo => {
+        const valor = localStorage.getItem(campo);
+        if (valor) document.getElementById(campo).value = valor;
+      });
+    };
+
+    // Busca endereço via ViaCEP
+    function buscarCEP() {
+      const cep = document.getElementById('cep').value.replace(/\D/g, '');
+      if (cep.length !== 8) return;
+
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.erro) {
+            alert('CEP não encontrado.');
+            return;
+          }
+          document.getElementById('cidade').value = data.localidade;
+          document.getElementById('bairro').value = data.bairro;
+          document.getElementById('rua').value = data.logradouro;
+        })
+        .catch(() => alert('Erro ao buscar CEP.'));
+    }
+
+    // Salva os dados no localStorage e calcula frete
+    function salvarEndereco(event) {
+      event.preventDefault();
+
+      const campos = ['cep', 'cidade', 'bairro', 'rua', 'numero', 'complemento', 'referencia'];
+      campos.forEach(campo => {
+        const valor = document.getElementById(campo).value.trim();
+        localStorage.setItem(campo, valor);
+      });
+
+      // Cálculo de frete baseado no CEP
+      const cepCliente = localStorage.getItem('cep');
+      const cepLoja = '06160201'; // CEP da loja (sem hífen)
+
+      const distancia = estimarDistanciaPorCep(cepCliente, cepLoja);
+      let frete = 0;
+
+      if (distancia <= 1) {
+        frete = 0;
+      } else if (distancia <= 3) {
+        frete = 5;
+      } else if (distancia <= 6) {
+        frete = 10;
+      } else {
+        frete = Math.ceil((distancia - 6) / 3) * 5 + 10;
+      }
+
+      localStorage.setItem('valorFrete', frete.toFixed(2));
+
+      // Redireciona para a próxima página
+      window.location.href = 'pagina-setima.html';
+    }
+
+    // Simula distância entre os CEPs
+    function estimarDistanciaPorCep(cep1, cep2) {
+      const n1 = parseInt(cep1.replace(/\D/g, ''));
+      const n2 = parseInt(cep2.replace(/\D/g, ''));
+      const diff = Math.abs(n1 - n2);
+      return diff / 10000; // Aproximadamente: cada 10.000 = 1 km
+    }
+  </script>
+
+</body>
+</html>

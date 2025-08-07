@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>📍 Pedido Presencial - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #fff7f0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #c0392b;
+    }
+    .form {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    select, input[type="number"], input[type="text"], input[type="date"], input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c0392b;
+    }
+    ul {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #fceae6;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .remover-btn {
+      background: transparent;
+      border: none;
+      color: red;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>📍 Pedido Presencial</h1>
+
+  <div class="form">
+    <label for="produto">Produto:</label>
+    <select id="produto"></select>
+
+    <label for="quantidade">Quantidade:</label>
+    <input type="number" id="quantidade" min="1" value="1">
+
+    <button onclick="adicionarProduto()">Adicionar Produto</button>
+
+    <ul id="listaProdutos"></ul>
+    <div class="total">Total: R$ <span id="totalPedido">0,00</span></div>
+
+    <label for="cliente">Nome:</label>
+    <input type="text" id="cliente" placeholder="Nome do cliente">
+
+    <label for="telefoneCliente">Telefone:</label>
+    <input type="text" id="telefoneCliente" placeholder="Telefone do cliente">
+
+    <label for="dataPedido">Data do Pedido:</label>
+    <input type="date" id="dataPedido">
+
+    <label for="horaPedido">Hora do Pedido:</label>
+    <input type="time" id="horaPedido">
+
+    <label for="pagamento">Forma de pagamento:</label>
+    <select id="pagamento">
+      <option value="Dinheiro">Dinheiro</option>
+      <option value="PIX">PIX</option>
+      <option value="Cartão">Cartão</option>
+    </select>
+
+    <label for="formaEntrega">Forma de Entrega:</label>
+    <input type="text" id="formaEntrega" placeholder="Ex: Retirada, Motoboy, Correios...">
+
+    <label for="Frete">Frete (R$):</label>
+    <input type="text" id="Frete" placeholder="Ex: 5,00">
+
+    <button onclick="limparCamposExtras()">Limpar Informações Manuais</button>
+    <button onclick="finalizarPedido()">Finalizar Pedido</button>
+  </div>
+
+  <script>
+    const listaEl = document.getElementById("listaProdutos");
+    const selectProduto = document.getElementById("produto");
+    const totalPedidoEl = document.getElementById("totalPedido");
+
+    let estoque = [];
+    let precos = {};
+    let carrinho = [];
+
+    function carregarProdutos() {
+      const fixos = ["Kit de Brigadeiro", "Mousse de Chocolate", "Mousse de Limão", "Mousse de Morango", "Mousse de Maracujá", "Mousse de Maracujá com cobertura de chocolate", "Mini Pudim de Leite Condensado", "Mini Pudim de Chocolate", "Espetinho de Morango", "Espetinho de Uva", "Espetinho Misto", "Brownie (1 pedaço)", "Brownie mergulhado no chocolate", "Chocolate com morango", "Chocolate com leite ninho com morango", "Leite ninho com morango", "Leite ninho com pó de leite ninho por cima", "Chocolate com granulado de chocolate por cima", "Abacaxi com ninho", "Pote de Canjica", "Maçã do Amor", "Morango do Amor", "Uva do Amor"];
+      estoque = fixos.map(nome => ({ nome }));
+      const adicionais = JSON.parse(localStorage.getItem("produtos_mamis")) || [];
+      adicionais.forEach(p => estoque.push({ nome: p.nome }));
+      selectProduto.innerHTML = "";
+      estoque.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.nome;
+        opt.textContent = p.nome;
+        selectProduto.appendChild(opt);
+      });
+    }
+
+    function carregarPrecos() {
+      const salvos = JSON.parse(localStorage.getItem("precos_mamis")) || {};
+      estoque.forEach(p => {
+        precos[p.nome] = salvos[p.nome] || "0,00";
+      });
+    }
+
+    function formatarParaNumero(valor) {
+      return parseFloat(valor.replace(",", ".")) || 0;
+    }
+
+    function adicionarProduto() {
+      const nome = selectProduto.value;
+      const qtd = parseInt(document.getElementById("quantidade").value);
+      if (!nome || qtd <= 0) return;
+      const precoUnitario = formatarParaNumero(precos[nome] || "0,00");
+      const total = precoUnitario * qtd;
+
+      const item = { nome, qtd, preco: precoUnitario };
+      carrinho.push(item);
+
+      const li = document.createElement("li");
+      li.innerHTML = `${qtd}x ${nome} - R$ ${(total).toFixed(2).replace(".", ",")} <button class='remover-btn' onclick='removerProduto(this)'>❌</button>`;
+      li.dataset.index = carrinho.length - 1;
+      listaEl.appendChild(li);
+
+      atualizarTotal();
+    }
+
+    function removerProduto(botao) {
+      const li = botao.parentElement;
+      const index = Array.from(listaEl.children).indexOf(li);
+      carrinho.splice(index, 1);
+      li.remove();
+      atualizarTotal();
+    }
+
+    function atualizarTotal() {
+      const subtotal = carrinho.reduce((soma, item) => soma + (item.qtd * item.preco), 0);
+      const frete = formatarParaNumero(document.getElementById("Frete").value.trim());
+      const total = subtotal + frete;
+      totalPedidoEl.textContent = total.toFixed(2).replace(".", ",");
+    }
+
+    document.getElementById("Frete").addEventListener("input", atualizarTotal);
+
+    function limparCamposExtras() {
+      document.getElementById("formaEntrega").value = "";
+      document.getElementById("Frete").value = "";
+      document.getElementById("cliente").value = "";
+      document.getElementById("telefoneCliente").value = "";
+      document.getElementById("dataPedido").value = "";
+      document.getElementById("horaPedido").value = "";
+      atualizarTotal();
+    }
+
+    function finalizarPedido() {
+      const cliente = document.getElementById("cliente").value.trim();
+      const telefoneCliente = document.getElementById("telefoneCliente").value.trim();
+      const pagamento = document.getElementById("pagamento").value;
+      const formaEntrega = document.getElementById("formaEntrega").value.trim();
+      const frete = formatarParaNumero(document.getElementById("Frete").value.trim());
+
+      if (carrinho.length === 0) return alert("Adicione ao menos 1 produto.");
+      if (!cliente) return alert("Informe o nome do cliente.");
+
+      const dataInput = document.getElementById("dataPedido").value;
+      const horaInput = document.getElementById("horaPedido").value;
+
+      let dataHora;
+      if (dataInput && horaInput) {
+        dataHora = `${dataInput.split("-").reverse().join("/")} ${horaInput}`;
+      } else {
+        dataHora = new Date().toLocaleString("pt-BR");
+      }
+
+      const subtotal = carrinho.reduce((soma, item) => soma + (item.qtd * item.preco), 0);
+      const total = subtotal + frete;
+
+      const pedido = {
+        nome: cliente,
+        telefone: telefoneCliente,
+        data: dataHora.split(" ")[0],
+        itens: carrinho.map(p => ({ nome: p.nome, quantidade: p.qtd })),
+        total: total.toFixed(2).replace(".", ","),
+        entrega: formaEntrega,
+        pagamento: pagamento,
+        observacao: "Presencial"
+      };
+
+      const chave = `pedidos_${telefoneCliente}`;
+      const pedidosAnteriores = JSON.parse(localStorage.getItem(chave) || "[]");
+      pedidosAnteriores.push(pedido);
+      localStorage.setItem(chave, JSON.stringify(pedidosAnteriores));
+
+      // Descontar itens do estoque
+carrinho.forEach(item => {
+  const chaveEstoque = "estoque_" + item.nome;
+  const estoqueAtual = parseInt(localStorage.getItem(chaveEstoque)) || 0;
+  const novoEstoque = Math.max(estoqueAtual - item.qtd, 0);
+  localStorage.setItem(chaveEstoque, novoEstoque);
+});
+
+
+      alert("Pedido salvo com sucesso!");
+      location.reload();
+    }
+
+    carregarProdutos();
+    carregarPrecos();
+  </script>
+</body>
+</html>

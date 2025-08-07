@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Entrar - Delícias da Mamis</title>
+  <style>
+    body {
+      background: #fff0f5;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      color: #a64d79;
+      margin-bottom: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #d25a95;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #b03a6b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h2>Entrar / Cadastrar</h2>
+    <input type="email" id="email" placeholder="Seu e-mail" required />
+    <input type="password" id="senha" placeholder="Sua senha" required />
+    <input type="text" id="endereco" placeholder="Seu endereço (cadastro)" />
+    <button onclick="entrarOuCadastrar()">Entrar</button>
+  </div>
+
+  <script>
+    function entrarOuCadastrar() {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+      const endereco = document.getElementById('endereco').value.trim();
+
+      if (!email || !senha) {
+        alert("Por favor, preencha o e-mail e a senha.");
+        return;
+      }
+
+      let usuarios = JSON.parse(localStorage.getItem('usuariosMamis')) || {};
+
+      if (usuarios[email]) {
+        // Usuário já cadastrado -> login
+        if (usuarios[email].senha === senha) {
+          localStorage.setItem('usuarioLogado', email);
+          window.location.href = 'finalizarcompra.html';
+        } else {
+          alert("Senha incorreta. Tente novamente.");
+        }
+      } else {
+        // Novo cadastro: endereço obrigatório
+        if (!endereco) {
+          alert("Por favor, informe seu endereço para cadastro.");
+          return;
+        }
+        usuarios[email] = { senha, endereco };
+        localStorage.setItem('usuariosMamis', JSON.stringify(usuarios));
+        localStorage.setItem('usuarioLogado', email);
+        alert("Cadastro realizado com sucesso!");
+        window.location.href = 'finalizarcompra.html';
+      }
+    }
+  </script>
+
+</body>
+</html>

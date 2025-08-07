@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.7">
+  <title>Pedido Online - Delícias da Mamis</title>
+  <link rel="stylesheet" href="stylepedido.css" />
+  <style>
+    /* Cursor apontando para as miniaturas clicáveis */
+    .galeria-doces-pequena img {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPO -->
+  <header class="topo-pedido">
+    <div class="logo-nome">
+      <img src="https://i.ibb.co/mstk7JQ/Logotipo-confeitaria-bolos-delicado-rosa-6.png"
+           alt="Logo Delícias da Mamis"
+           class="logo-pequena" />
+      <div class="titulo-e-status">
+        <h1>Delícias da Mamis</h1>
+        <div class="status-container">
+          <p id="status-loja">Verificando status...</p>
+          <button id="btn-info">Mais informações</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MODAL DE INFORMAÇÕES -->
+  <div id="modal-info" class="modal">
+    <div class="modal-content">
+      <span class="fechar" id="fechar-modal">&times;</span>
+      <h2>ℹ️ Informações da Loja</h2>
+      <p>🕓 <strong>Delivery:</strong> disponível das 10h às 00h</p>
+      <p>📍 <strong>Localização:</strong> Rua Zumbi dos Palmares, 140, Bandeiras - Osasco, SP</p>
+      <div class="contato-links">
+        <a href="https://wa.me/5511942039879" target="_blank" class="botao-whats">
+          <img src="https://png.pngtree.com/png-clipart/20190613/original/pngtree-whatsapp-icon-logo-png-image_3560531.jpg" alt="WhatsApp" />
+          Fale com a loja
+        </a>
+        <a href="https://www.instagram.com/deli_ciasdamamis/" target="_blank" class="botao-insta">
+          <img src="https://similarpng.com/_next/image?url=https%3A%2F%2Fimage.similarpng.com%2Ffile%2Fsimilarpng%2Fvery-thumbnail%2F2020%2F04%2FBeautiful-Instagram-logo-icon-social-media-png.png&w=3840&q=75" alt="Instagram" />
+          Siga-nos
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Atualiza status da loja
+    function atualizarStatus() {
+      const statusEl = document.getElementById("status-loja");
+      const hora = new Date().getHours();
+      if (hora >= 8 && hora < 24) {
+        statusEl.textContent = "🟢 Loja Aberta!";
+        statusEl.classList.remove("fechada");
+      } else {
+        statusEl.textContent = "🔴 Loja Fechada";
+        statusEl.classList.add("fechada");
+      }
+    }
+    // Abre/fecha modal info
+    document.getElementById("btn-info").onclick = () => document.getElementById("modal-info").style.display = "block";
+    document.getElementById("fechar-modal").onclick = () => document.getElementById("modal-info").style.display = "none";
+    window.onclick = e => {
+      if (e.target == document.getElementById("modal-info")) {
+        document.getElementById("modal-info").style.display = "none";
+      }
+    };
+    window.onload = atualizarStatus;
+
+    // Rola até o preço correspondente
+    function rolarParaElemento(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  </script>
+
+  <!-- CATEGORIAS -->
+  <h2 class="titulo-categoria">Categorias</h2>
+  <div class="galeria-doces-pequena">
+    <div class="item-doce">
+      <img src="https://images.tcdn.com.br/img/img_prod/795791/brigadeiro_gourmet_com_chocolate_belga_4_un_caminho_da_fazenda_929_2_304c478e5158e55b8637790dbd629afa.jpg"
+           alt="Brigadeiro Gourmet"
+           onclick="rolarParaElemento('preco-kit-de-brigadeiro')" />
+      <p>Brigadeiro Gourmet</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://i.pinimg.com/736x/1f/5d/00/1f5d007816fe86cb88211305379d1e14.jpg"
+           alt="Mousses"
+           onclick="rolarParaElemento('preco-mousse-de-chocolate')" />
+      <p>Mousses de diversos sabores</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://ibassets.com.br/ib.item.image.large/l-f51b0713a49d4bae95201928dbf9126f.jpeg"
+           alt="Mini Pudim Tradicional"
+           onclick="rolarParaElemento('preco-mini-pudim-de-leite-condensado')" />
+      <p>Mini Pudim Tradicional</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://harald.com.br/wp-content/uploads/2020/07/pudim-de-chocolate-720x500-1.jpg"
+           alt="Mini Pudim de Chocolate"
+           onclick="rolarParaElemento('preco-mini-pudim-de-chocolate')" />
+      <p>Mini Pudim de Chocolate</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://www.epa.com.br/wp-content/uploads/2023/09/Espetinho-de-frutas.jpg"
+           alt="Espetinho de Morango e Uva"
+           onclick="rolarParaElemento('preco-espetinho-de-morango')" />
+      <p>Espetinho de Morango e Uva</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://moinhoglobo.com.br/wp-content/uploads/2016/02/51-Brownie-scaled.jpg"
+           alt="Brownie"
+           onclick="rolarParaElemento('preco-brownie-1-pedaco')" />
+      <p>Brownie</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://www.minhasreceitas.blog.br/wp-content/uploads/2020/08/Bolo-no-pote-1.jpg.webp"
+           alt="Bolo de Pote"
+           onclick="rolarParaElemento('preco-chocolate-com-morango')" />
+      <p>Bolo de Pote diversos sabores</p>
+    </div>
+    <div class="item-doce">
+      <img src="https://receitas.vapza.com.br/2023/wp-content/uploads/2023/01/receita-canjica-tradicional-vapza-768x509.png"
+           alt="Canjica"
+           onclick="rolarParaElemento('preco-pote-de-canjica')" />
+      <p>Canjica</p>
+    </div>
+    <div class="item-doce">
+  <img src="https://st3.depositphotos.com/1063437/16054/i/450/depositphotos_160546204-stock-photo-bottles-of-assorted-global-soft.jpg"
+       alt="Morango, Maçã e Uva do Amor"
+       onclick="rolarParaElemento('preco-maca-do-amor')" />
+  <p>Morango, Maçã e Uva do Amor</p>
+</div>
+
+</div>
+  </div>
+
+  <!-- SEÇÕES DE PRODUTOS -->
+  <section class="categoria">
+    <div class="categoria-titulo"><h2>Kit de Brigadeiro</h2></div>
+    <div class="galeria-doces">
+      <div class="doce" onclick="abrirModal('Kit de Brigadeiro', document.getElementById('preco-kit-de-brigadeiro').textContent)">
+        <img src="https://images.tcdn.com.br/img/img_prod/795791/brigadeiro_gourmet_com_chocolate_belga_4_un_caminho_da_fazenda_929_2_304c478e5158e55b8637790dbd629afa.jpg" alt="Kit de Brigadeiro" />
+        <p>Kit de Brigadeiro</p>
+     <p id="preco-kit-de-brigadeiro">R$ 12,00</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="categoria">
+    <div class="categoria-titulo"><h2>Mousses</h2></div>
+    <div class="galeria-doces">
+      <div class="doce" onclick="abrirModal('Mousse de Chocolate', document.getElementById('preco-mousse-de-chocolate').textContent)">
+        <img src="https://i.pinimg.com/736x/e7/4d/7c/e74d7c0e8187b929d8746f0dd7446ecb.jpg" alt="Mousse de Chocolate" />
+        <p>Mousse de Chocolate</p>
+          <p id="preco-mousse-de-chocolate">R$ 5,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Mousse de Limão',document.getElementById('preco-mousse-de-limao').textContent)">
+        <img src="https://i.pinimg.com/736x/2e/3e/9c/2e3e9c14ef7109b1be5789b282d4f0c3.jpg" alt="Mousse de Limão" />
+        <p>Mousse de Limão</p>
+            <p id="preco-mousse-de-limao">R$ 5,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Mousse de Morango',document.getElementById('preco-mousse-de-morango').textContent)">
+        <img src="https://i.pinimg.com/1200x/7d/25/4e/7d254e23f7886aa6f2074e7a827b3f6a.jpg" alt="Mousse de Morango" />
+        <p>Mousse de Morango</p>
+         <p id="preco-mousse-de-morango">R$ 5,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Mousse de Maracujá',document.getElementById('preco-mousse-de-maracuja').textContent)">
+        <img src="https://i.pinimg.com/736x/ad/8e/59/ad8e590cbe5d40c4e7adc7e003b0d8ea.jpg" alt="Mousse de Maracujá" />
+        <p>Mousse de Maracujá</p>
+        <p id="preco-mousse-de-maracuja">R$ 5,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Mousse de Maracujá com cobertura de chocolate',document.getElementById('preco-mousse-de-maracuja-com-cobertura-de-chocolate').textContent)">
+        <img src="https://i.ibb.co/7vB1cBc/mousse-maracuja-chocolate.jpg"
+             alt="Mousse de Maracujá c/ cobertura de chocolate" />
+        <p>Mousse de Maracujá com cobertura de chocolate</p>
+         <p id="preco-mousse-de-maracuja-com-cobertura-de-chocolate">R$ 5,00</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="categoria">
+    <div class="categoria-titulo"><h2>Pudins</h2></div>
+    <div class="galeria-doces">
+      <div class="doce" onclick="abrirModal('Mini Pudim de Leite Condensado',document.getElementById('preco-mini-pudim-de-leite-condensado').textContent)">
+        <img src="https://i.pinimg.com/736x/ae/44/37/ae44375484593eaf82f4d29957f4700e.jpg"
+             alt="Mini Pudim de Leite Condensado" />
+        <p>Mini Pudim de Leite Condensado</p>
+    <p id="preco-mini-pudim-de-leite-condensado">R$ 8,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Mini Pudim de Chocolate',document.getElementById('preco-mini-pudim-de-chocolate').textContent)">
+        <img src="https://i.pinimg.com/1200x/42/21/d6/4221d691cb3fdbbe635a0d6c9e566e28.jpg" alt="Mini Pudim de Chocolate" />
+        <p>Mini Pudim de Chocolate</p>
+      <p id="preco-mini-pudim-de-chocolate">R$ 8,00</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="categoria">
+    <div class="categoria-titulo"><h2>Espetinhos</h2></div>
+    <div class="galeria-doces">
+      <div class="doce" onclick="abrirModal('Espetinho de Morango',document.getElementById('preco-espetinho-de-morango').textContent)">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJr5bDwxcUd31eN4ek6MvR_G126_MH2SnGv_rtgsPGwIgyP9YZM_E85bVFq2FICreKKdc&usqp=CAU" alt="Espetinho de Morango" />
+        <p>Espetinho de Morango</p>
+        <p id="preco-espetinho-de-morango">R$ 8,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Espetinho de Uva',document.getElementById('preco-espetinho-de-uva').textContent)">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBTqRTafJ8CtGUtXXEfKFiXFqlI8mRbjcoOiTrfvUZKy6XY5CBoNJdFrc7CJM5DK3wLpQ&usqp=CAU" alt="Espetinho de Uva" />
+        <p>Espetinho de Uva</p>
+        <p id="preco-espetinho-de-uva">R$ 15,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Espetinho Misto',document.getElementById('preco-espetinho-misto').textContent)">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQy0_byjK7zRrBAgNJNgrToVrIRB7AFf06zD7sY5cS6Ua9tJWaJBFijLoGNQXINxKfz-HE&usqp=CAU" alt="Espetinho Misto" />
+        <p>Espetinho Misto</p>
+        <p id="preco-espetinho-misto">R$ 15,00</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="categoria">
+    <div class="categoria-titulo"><h2>Brownies</h2></div>
+    <div class="galeria-doces">
+      <div class="doce" onclick="abrirModal('Brownie (1 pedaço)',document.getElementById('preco-brownie-1-pedaco').textContent)">
+        <img src="https://img.cybercook.com.br/imagens/receitas/581/brownie-8.jpeg" alt="Brownie (1 pedaço)" />
+        <p>Brownie (1 pedaço)</p>
+        <p id="preco-brownie-1-pedaco">R$ 8,00</p>
+      </div>
+      <div class="doce" onclick="abrirModal('Brownie mergulhado no chocolate',document.getElementById('preco-brownie-mergulhado-no-chocolate').textContent)">
+        <img src="https://static-images.ifood.com.br/pratos/5721ecfd-bb7b-4f45-bb20-67512ed47258/202412051949_62WY_i.jpg" alt="Brownie mergulhado no chocolate" />
+        <p>Brownie mergulhado no chocolate</p>
+        <p id="preco-brownie-mergulhado-no-chocolate">R$ 12,00</p>
+      </div>
+    </div>
+  </section>
+
+<section class="categoria">
+  <div class="categoria-titulo"><h2>Bolo de Pote</h2></div>
+  <div class="galeria-doces">
+    <div class="doce" onclick="abrirModal('Chocolate com morango',document.getElementById('preco-chocolate-com-morango').textContent)">
+      <img src="https://i.ibb.co/3sCN26F/bolo-choc-morango.jpg" alt="Chocolate com morango" />
+      <p>Chocolate com morango</p>
+      <p id="preco-chocolate-com-morango">R$ 12,00</p>
+    </div>
+    <div class="doce" onclick="abrirModal('Chocolate com leite ninho com morango',document.getElementById('preco-chocolate-com-leite-ninho-com-morango').textContent)">
+      <img src="https://i.ibb.co/hVzycsj/bolo-choc-ninho-morango.jpg" alt="Chocolate com leite ninho com morango" />
+      <p>Chocolate com leite ninho com morango</p>
+      <p id="preco-chocolate-com-leite-ninho-com-morango">R$ 12,00</p>
+    </div>
+    <div class="doce" onclick="abrirModal('Leite ninho com morango',document.getElementById('preco-leite-ninho-com-morango').textContent)">
+      <img src="https://i.ibb.co/Chxsnf3/bolo-ninho-morango.jpg" alt="Leite ninho com morango" />
+      <p>Leite ninho com morango</p>
+       <p id="preco-leite-ninho-com-morango">R$ 12,00</p>
+    </div>
+    <div class="doce" onclick="abrirModal('Leite ninho com pó de leite ninho por cima',document.getElementById('preco-leite-ninho-com-po-de-leite-ninho-por-cima').textContent)">
+      <img src="https://i.ibb.co/MN9NFjt/bolo-ninho-po.jpg" alt="Leite ninho com pó de leite ninho por cima" />
+      <p>Leite ninho com pó de leite ninho por cima</p>
+       <p id="preco-leite-ninho-com-po-de-leite-ninho-por-cima">R$ 12,00</p>
+    </div>
+    <div class="doce" onclick="abrirModal('Chocolate com granulado de chocolate por cima',document.getElementById('preco-chocolate-com-granulado-de-chocolate-por-cima').textContent)">
+      <img src="https://i.ibb.co/zVjkS78/bolo-choc-granulado.jpg" alt="Chocolate com granulado de chocolate por cima" />
+      <p>Chocolate com granulado de chocolate por cima</p>
+      <p id="preco-chocolate-com-granulado-de-chocolate-por-cima">R$ 12,00</p>
+    </div>
+    <div class="doce" onclick="abrirModal('Abacaxi com ninho',document.getElementById('preco-abacaxi-com-ninho').textContent)">
+      <img src="https://i.ibb.co/6nLdNCn/bolo-abacaxi-ninho.jpg" alt="Abacaxi com ninho" />
+      <p>Abacaxi com ninho</p>
+       <p id="preco-abacaxi-com-ninho">R$ 12,00</p>
+    </div>
+  </div>
+
+
+
+  
+</section>
+
+
+  <section class="categoria">
+    <div class="categoria-titulo"><h2>Pote de Canjica</h2>
+      <p class="observacao">* Disponível somente nos meses de junho e julho</p>
+    </div>
+    <div class="galeria-doces">
+      <div class="doce" onclick="abrirModal('Pote de Canjica',document.getElementById('preco-pote-de-canjica').textContent)">
+        <img src="https://s3-sa-east-1.amazonaws.com/deliveryon-uploads/products/cozinhadamarli/1_5f1b30903925e.png" alt="Pote de Canjica" />
+        <p>Pote de Canjica</p>
+        <p id="preco-pote-de-canjica">R$ 8,00</p>
+      </div>
+      
+    </div>
+       <section class="categoria">
+  <div class="categoria-titulo"><h2>Morango, Maçã e Uva do Amor</h2></div>
+  <div class="galeria-doces">
+    <div class="doce" onclick="abrirModal('Maçã do Amor',document.getElementById('preco-maca-do-amor').textContent)">
+      <img src="https://i.ibb.co/fXymKJR/refri-coca.jpg" alt="Maçã do Amor" />
+      <p>Maçã do Amor</p>
+      <p id="preco-maca-do-amor">R$ 12,00</p>
+    </div>
+<div class="doce" onclick="abrirModal('Morango do Amor',document.getElementById('preco-morango-do-amor').textContent)">
+      <img src="https://i.ibb.co/rZRM3ZR/refri-guarana.jpg" alt="Morango do Amor" />
+      <p>Morango do Amor</p>
+      <p id="preco-morango-do-amor">R$ 5,00</p>
+    </div>
+    <div class="doce" onclick="abrirModal('Uva do Amor',document.getElementById('preco-uva-do-amor').textContent)">
+      <img src="https://i.ibb.co/rZRM3ZR/refri-guarana.jpg" alt="Uva do Amor" />
+      <p>Uva do Amor</p>
+      <p id="preco-uva-do-amor">R$ 5,00</p>
+    </div>
+
+
+
+
+    </div>
+    <!-- PRODUTOS NOVOS AUTOMÁTICOS -->
+<div id="produtos-cadastrados-container"></div>
+ 
+    </div>
+  </div>
+</section>
+
+  </section>
+
+  <!-- MODAL DE PEDIDO DE QUANTIDADE -->
+  <div id="modal-pedido" class="modal">
+    <div class="modal-content">
+      <span class="fechar" id="fechar-pedido">&times;</span>
+      <h2 id="pedido-nome-doce">Doce</h2>
+      <p id="pedido-preco-doce">Preço: R$ 0,00</p>
+      <label for="quantidade">Quantidade:</label>
+      <input type="number" id="quantidade" min="1" value="1" />
+      <button id="btn-adicionar">Adicionar ao carrinho</button>
+    </div>
+    
+  </div>
+
+  <!-- BOTÃO FLOTA E MODAL DO CARRINHO -->
+  <button id="abrir-carrinho">🛒 Carrinho (<span id="contador-itens">0</span>)</button>
+  <div id="modal-carrinho" class="modal">
+    <div class="modal-content">
+      <span class="fechar" id="fechar-carrinho">&times;</span>
+      <h2>Seu Carrinho</h2>
+      <div id="lista-carrinho"></div>
+      <p><strong>Total: R$ <span id="total-carrinho">0,00</span></strong></p>
+      <button id="finalizar-compra">Finalizar Compra</button>
+    </div>
+  </div>
+
+  <script>
+    // Abre modal de pedido
+    function abrirModal(nome, preco) {
+      document.getElementById('pedido-nome-doce').textContent = nome;
+      document.getElementById('pedido-preco-doce').textContent = 'Preço: ' + preco;
+      document.getElementById('quantidade').value = 1;
+        document.getElementById('pedido-preco-doce').textContent += ' | Disponível: ' + (localStorage.getItem("estoque_" + nome) || 0);
+      document.getElementById('modal-pedido').style.display = 'block';
+    }
+    // Fecha modal pedido
+    document.getElementById('fechar-pedido').onclick = () => {
+      document.getElementById('modal-pedido').style.display = 'none';
+    };
+    window.onclick = e => {
+      if (e.target == document.getElementById('modal-pedido')) {
+        document.getElementById('modal-pedido').style.display = 'none';
+      }
+    };
+     // Atualizar preços no site com base no localStorage
+    const precosSalvos = JSON.parse(localStorage.getItem("precos_mamis") || "{}");
+
+    for (const nome in precosSalvos) {
+      const id = "preco-" + nome.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
+        .replace(/[^a-z0-9]+/g, "-") // troca espaços e pontuação por "-"
+        .replace(/(^-|-$)/g, ""); // remove traços do início/fim
+
+      const elem = document.getElementById(id);
+      if (elem) elem.textContent = "R$ " + precosSalvos[nome];
+    }
+
+    // Lógica do carrinho
+    const carrinho = [];
+    function precoParaNumero(s) { return parseFloat(s.replace('R$ ','').replace(',','.')); }
+    function numeroParaPreco(n){ return n.toFixed(2).replace('.',','); }
+    function atualizarContador(){
+      const c = carrinho.reduce((a,i)=>a+i.quantidade,0);
+      document.getElementById('contador-itens').textContent = c;
+    }
+    function atualizarCarrinho(){
+      const lista = document.getElementById('lista-carrinho');
+      lista.innerHTML = '';
+      if(!carrinho.length){
+        lista.innerHTML='<p>Seu carrinho está vazio.</p>';
+        document.getElementById('total-carrinho').textContent='0,00';
+        return;
+      }
+      let total=0;
+      carrinho.forEach((item,i)=>{
+        const sub = item.quantidade * precoParaNumero(item.preco);
+        total+=sub;
+        const div = document.createElement('div');
+        div.style.display='flex';
+        div.style.justifyContent='space-between';
+        div.style.marginBottom='10px';
+        div.innerHTML=`
+          <div><strong>${item.nome}</strong><br>${item.quantidade} x R$ ${numeroParaPreco(precoParaNumero(item.preco))}</div>
+          <div>R$ ${numeroParaPreco(sub)} <button onclick="removerItem(${i})">x</button></div>
+        `;
+        lista.appendChild(div);
+      });
+      document.getElementById('total-carrinho').textContent = numeroParaPreco(total);
+    }
+    function removerItem(idx){
+      carrinho.splice(idx,1);
+      atualizarCarrinho();
+      atualizarContador();
+    }
+    document.getElementById('btn-adicionar').onclick = ()=>{
+      const nome = document.getElementById('pedido-nome-doce').textContent;
+      const preco = document.getElementById('pedido-preco-doce').textContent.replace('Preço: ','');
+      const qtd = parseInt(document.getElementById('quantidade').value);
+      const disponivel = parseInt(localStorage.getItem('estoque_' + nome)) || 0;
+if (disponivel <= 0) {
+  alert('Produto esgotado!');
+  return;
+}
+ if (qtd > disponivel) {
+    alert(`Quantidade solicitada excede o estoque! Disponível: ${disponivel}`);
+    return;
+  }
+      if(qtd<1){ alert('Mínimo 1'); return; }
+      const existe = carrinho.find(x=>x.nome===nome);
+      if(existe) existe.quantidade+=qtd;
+      else carrinho.push({nome, preco, quantidade:qtd});
+      atualizarCarrinho();
+      atualizarContador();
+      document.getElementById('modal-pedido').style.display='none';
+      alert(`${qtd} x ${nome} adicionado(s)`);
+    };
+    document.getElementById('abrir-carrinho').onclick = ()=>{
+      atualizarCarrinho();
+      document.getElementById('modal-carrinho').style.display='block';
+    };
+    document.getElementById('fechar-carrinho').onclick = ()=>{
+      document.getElementById('modal-carrinho').style.display='none';
+    }
+
+
+
+    
+document.getElementById('finalizar-compra').onclick = () => {
+  if (!carrinho.length) {
+    alert('Carrinho vazio.');
+    return;
+  }
+
+  const total = document.getElementById('total-carrinho').textContent; // Ex: "50,00"
+  const totalFloat = parseFloat(total.replace(',', '.')); // Ex: 50.00
+
+  localStorage.setItem('valorPedido', totalFloat);
+  localStorage.setItem('itensCarrinho', JSON.stringify(carrinho)); // <- Adiciona isso aqui
+
+  window.location.href = 'finalizarcompra.html'; // Vai para a página 3
+
+
+
+  
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</script>
+<script>
+  function rolarParaElemento(id) {
+    const elemento = document.getElementById(id);
+    if (elemento) {
+      elemento.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      console.warn("Elemento não encontrado:", id);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('produtos-cadastrados-container');
+    const galeriaTopo = document.querySelector('.galeria-doces-pequena');
+    const produtos = JSON.parse(localStorage.getItem('produtos_mamis') || '[]');
+
+    if (!produtos.length) return;
+
+    const precosAtualizados = JSON.parse(localStorage.getItem("precos_mamis") || "{}");
+
+    // Lista oficial de categorias (como aparecem no cardápio fixo)
+    const categoriasOficiais = [
+      "Mousses",
+      "Brownies",
+      "Bolo de Pote",
+      "Pudins e Frutas",
+      "Suco Natural",
+      "Bebidas Geladas",
+      "Outros"
+    ];
+
+    const categoriasAgrupadas = {};
+
+    produtos.forEach(produto => {
+      const nomeCategoria = produto.categoria.trim().toLowerCase();
+
+      // Encontrar categoria correspondente no cardápio fixo
+      const categoriaPadrao = categoriasOficiais.find(cat => cat.toLowerCase() === nomeCategoria);
+      const categoriaFinal = categoriaPadrao || produto.categoria.trim();
+
+      if (!categoriasAgrupadas[categoriaFinal]) categoriasAgrupadas[categoriaFinal] = [];
+      categoriasAgrupadas[categoriaFinal].push(produto);
+    });
+
+    Object.entries(categoriasAgrupadas).forEach(([categoria, itens]) => {
+      const secao = document.createElement('section');
+      secao.className = 'categoria';
+
+      const titulo = document.createElement('div');
+      titulo.className = 'categoria-titulo';
+      titulo.innerHTML = `<h2>${categoria}</h2>`;
+      secao.appendChild(titulo);
+
+      const galeria = document.createElement('div');
+      galeria.className = 'galeria-doces';
+
+      itens.forEach(item => {
+        const nomeID = 'preco-' + item.nome.toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+        const precoFinal = precosAtualizados[item.nome] || item.preco;
+
+        const divDoce = document.createElement('div');
+        divDoce.className = 'doce';
+        divDoce.setAttribute('onclick', `abrirModal('${item.nome}', document.getElementById('${nomeID}').textContent)`);
+
+        divDoce.innerHTML = `
+          <img src="${item.imagem || 'https://via.placeholder.com/150x150.png?text=' + encodeURIComponent(item.nome)}" alt="${item.nome}" />
+          <p>${item.nome}</p>
+          <p id="${nomeID}">R$ ${precoFinal}</p>
+        `;
+
+        galeria.appendChild(divDoce);
+      });
+
+      secao.appendChild(galeria);
+      container.appendChild(secao);
+
+      // Miniatura da categoria (agora sempre adicionada no final)
+      const miniItem = document.createElement('div');
+      miniItem.className = 'item-doce';
+
+      const primeiroProduto = itens[0];
+      const nomeID = 'preco-' + primeiroProduto.nome.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+      miniItem.innerHTML = `
+        <img src="${primeiroProduto.imagem || 'https://via.placeholder.com/120x120.png?text=' + encodeURIComponent(categoria)}"
+             alt="${categoria}"
+             onclick="rolarParaElemento('${nomeID}')" />
+        <p>${categoria}</p>
+      `;
+
+      galeriaTopo.appendChild(miniItem);
+    });
+  });
+</script>
+
+</body>
+
+<button class="voltar" onclick="window.history.back()">←</button>
+
+</html>

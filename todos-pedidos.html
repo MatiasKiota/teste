@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=5">
+  <title>📦 Painel de Pedidos - Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(180deg, #fff0f5 0%, #ffe6f0 100%);
+      color: #4a004d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Estrelas animadas */
+    .estrela {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: piscar 2s infinite ease-in-out;
+      z-index: 0;
+      opacity: 0.8;
+    }
+
+    @keyframes piscar {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.6); }
+    }
+
+    /* Fundo decorativo de estrelas */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(#ffb6c1 1px, transparent 1px),
+                        radial-gradient(#ffd6e8 1px, transparent 1px);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
+      z-index: -2;
+      animation: brilhoEstrelas 20s linear infinite;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    @keyframes brilhoEstrelas {
+      0% { background-position: 0 0, 30px 30px; }
+      100% { background-position: 60px 60px, 90px 90px; }
+    }
+
+    .clique-estrela {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, #fff 30%, #ff99cc 60%, transparent 80%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: explodir 0.6s ease-out forwards;
+      z-index: 999;
+    }
+    @keyframes explodir {
+      0% { transform: scale(0.2); opacity: 1; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #e60073;
+      animation: flutuar 2s infinite alternate;
+      text-shadow: 1px 1px 3px #ffcce0;
+    }
+
+    .painel-resumo {
+      background: #ffffffd9;
+      border: 2px solid #ffd6e8;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(255, 102, 153, 0.25);
+      z-index: 1;
+    }
+
+    .painel-resumo input[type="date"] {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .painel-resumo button {
+      background: #ff3385;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin-top: 15px;
+      border-radius: 14px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .painel-resumo button:hover {
+      background: #cc005f;
+    }
+
+    .resumo-texto strong {
+      display: block;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    .cliente-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(255, 51, 153, 0.15);
+      margin: 24px 0;
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      border: 1px dashed #ff99cc;
+      z-index: 1;
+    }
+
+    .cliente-card h2 {
+      font-size: 20px;
+      color: #99004d;
+      margin-bottom: 15px;
+    }
+
+    .pedido {
+      background: #fff0f5;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      box-shadow: inset 0 0 5px #ffcce6;
+    }
+
+    .pedido span {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .botoes-controle {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .botoes-controle button {
+      background-color: #e60073;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .botoes-controle button:hover {
+      background-color: #b30059;
+    }
+
+    .sem-pedidos {
+      text-align: center;
+      font-size: 18px;
+      color: #cc0077;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .escondido { display: none; }
+
+    @keyframes flutuar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(10px); }
+    }
+    .pulsar {
+      animation: pulsar 1.2s infinite;
+    }
+    @keyframes pulsar {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 51, 153, 0.4); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 51, 153, 0); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+<script>
+  for (let i = 0; i < 120; i++) {
+    const estrela = document.createElement("div");
+    estrela.className = "estrela";
+    estrela.style.top = `${Math.random() * 100}vh`;
+    estrela.style.left = `${Math.random() * 100}vw`;
+    estrela.style.animationDuration = `${2 + Math.random() * 3}s`;
+    estrela.style.opacity = Math.random().toFixed(1);
+    document.body.appendChild(estrela);
+  }
+</script>
+
+<h1>📦 Painel de Pedidos - Mamis</h1>
+<div class="painel-resumo">
+  <div class="resumo-texto" id="resumoTexto">Carregando resumo...</div>
+  <button class="pulsar" onclick="mostrarPedidosDoDia()">📋 Ver Pedidos do Dia</button>
+  <br>
+  <input type="date" id="seletorData">
+</div>
+<div id="listaPedidos" class="escondido"></div>
+<div class="botoes-controle">
+  <button onclick="window.location.href='index.html'">← Voltar</button>
+  <button onclick="window.location.href='estoque.html'">📦 Estoque</button>
+  <button onclick="window.location.href='precos.html'">💰 Preços</button>
+  <button onclick="window.location.href='novos-doces.html'">🍬 Novos Doces</button>
+  <button onclick="window.location.href='agendados.html'">📅 Pedidos Agendados</button>
+  <button onclick="window.location.href='mensal.html'">📊 Ganhos Mensais</button>
+  <button onclick="window.location.href='pedido-presencial.html'">💐 Pedidos Presencial</button>
+  <button onclick="window.location.href='avaliacoes-mamis.html'">💐 Avaliações dos Clientes</button>
+  <button onclick="alternarManutencao()">🔧 Ativar/Desativar Manutenção</button>
+  <button onclick="limparPedidos()">🧹 Limpar Tudo</button>
+</div>
+<script>
+
+const botaoManutencao = document.querySelector("button[onclick='alternarManutencao()']");
+
+function atualizarTextoBotao() {
+  const status = localStorage.getItem('modoManutencao');
+  if (status === 'ativo') {
+    botaoManutencao.textContent = "🔓 Desativar Manutenção";
+  } else {
+    botaoManutencao.textContent = "🔧 Ativar Manutenção";
+  }
+}
+
+function alternarManutencao() {
+  const statusAtual = localStorage.getItem('modoManutencao');
+  if (statusAtual === 'ativo') {
+    localStorage.setItem('modoManutencao', 'inativo');
+    alert("🔓 Modo manutenção desativado!");
+  } else {
+    localStorage.setItem('modoManutencao', 'ativo');
+    alert("🔒 Modo manutenção ativado!");
+  }
+  atualizarTextoBotao();
+}
+
+atualizarTextoBotao();
+
+  document.body.addEventListener("click", function (e) {
+    if (e.target.tagName !== "BUTTON" && e.target.tagName !== "INPUT") {
+      const estrela = document.createElement("div");
+      estrela.className = "clique-estrela";
+      estrela.style.top = `${e.clientY - 10}px`;
+      estrela.style.left = `${e.clientX - 10}px`;
+      document.body.appendChild(estrela);
+      setTimeout(() => estrela.remove(), 600);
+    }
+  });
+
+   const listaPedidosDiv = document.getElementById("listaPedidos");
+  const resumoTexto = document.getElementById("resumoTexto");
+  const seletorData = document.getElementById("seletorData");
+
+  // 🔗 URL do App Script da sua planilha
+  const urlPedidos = "https://script.google.com/macros/s/AKfycbz70DRjYDTC-fqGNGQc9CyJnowt0oRB3jsF5kY5tpfm200He_QdMqywTAyXNxbLRUKa/exec";
+
+  seletorData.addEventListener("change", () => {
+    const dataSelecionada = seletorData.value;
+    if (dataSelecionada) {
+      carregarResumo(dataSelecionada);
+      listaPedidosDiv.classList.add("escondido");
+    }
+  });
+
+  function formatarDataISOParaBR(dataISO) {
+    const [ano, mes, dia] = dataISO.split("-");
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  async function carregarPedidos(dataFiltro) {
+    listaPedidosDiv.innerHTML = "";
+    const dataFiltradaBR = formatarDataISOParaBR(dataFiltro);
+    let encontrouPedidos = false;
+
+    try {
+      const res = await fetch(urlPedidos);
+      const pedidos = await res.json();
+
+      pedidos.forEach(pedido => {
+        if (!pedido.Data) return;
+
+        const dataPedido = new Date(pedido.Data).toLocaleDateString("pt-BR");
+        if (dataPedido === dataFiltradaBR) {
+          const divPedido = document.createElement("div");
+          divPedido.className = "pedido";
+          divPedido.innerHTML = `
+            <span><strong>Data:</strong> ${dataPedido}</span>
+            <span><strong>Itens:</strong> ${pedido.Itens || "N/A"}</span>
+            <span><strong>Total:</strong> ${pedido.Total || "N/A"}</span>
+            <span><strong>Entrega:</strong> ${pedido.Entrega || "N/A"}</span>
+            <span><strong>Pagamento:</strong> ${pedido.Pagamento || "N/A"}</span>
+            <span><strong>Observação:</strong> ${pedido.Observacao || "Nenhuma"}</span>
+            <span><strong>Endereço:</strong><br>${(pedido.Endereço || "").replace(/\n/g, "<br>")}</span>
+          `;
+
+          const container = document.createElement("div");
+          container.className = "cliente-card";
+          container.innerHTML = `<h2>Cliente: ${pedido.Nome || "Sem nome"} - Tel: ${pedido.Telefone || "Sem telefone"}</h2>`;
+          container.appendChild(divPedido);
+          listaPedidosDiv.appendChild(container);
+          encontrouPedidos = true;
+        }
+      });
+
+      if (!encontrouPedidos) {
+        listaPedidosDiv.innerHTML = '<div class="sem-pedidos">Nenhum pedido encontrado para esta data.</div>';
+      }
+    } catch (error) {
+      listaPedidosDiv.innerHTML = '<div class="sem-pedidos">Erro ao carregar pedidos.</div>';
+      console.error("Erro ao buscar pedidos:", error);
+    }
+  }
+
+  async function carregarResumo(dataFiltro = null) {
+    const dataHoje = new Date().toISOString().split("T")[0];
+    const dataBase = dataFiltro || dataHoje;
+    const dataBR = formatarDataISOParaBR(dataBase);
+
+    try {
+      const res = await fetch(urlPedidos);
+      const pedidos = await res.json();
+      let totalPedidos = 0;
+      let totalValor = 0;
+
+      pedidos.forEach(pedido => {
+        if (!pedido.Data) return;
+        const dataPedido = new Date(pedido.Data).toLocaleDateString("pt-BR");
+        if (dataPedido === dataBR) {
+          totalPedidos++;
+          const valor = parseFloat((pedido.Total || "0").replace("R$", "").replace(",", ".").trim());
+          totalValor += isNaN(valor) ? 0 : valor;
+        }
+      });
+
+      resumoTexto.innerHTML = `📅 <strong>Data: ${dataBR}</strong> 🧁 <strong>Pedidos: ${totalPedidos}</strong> 💰 <strong>Total: R$ ${totalValor.toFixed(2).replace(".", ",")}</strong>`;
+    } catch (error) {
+      resumoTexto.innerHTML = `Erro ao carregar resumo.`;
+      console.error("Erro ao carregar resumo:", error);
+    }
+  }
+
+  function mostrarPedidosDoDia() {
+    const dataSelecionada = seletorData.value || new Date().toISOString().split("T")[0];
+    carregarPedidos(dataSelecionada);
+    listaPedidosDiv.classList.remove("escondido");
+    listaPedidosDiv.classList.add("fade-in");
+  }
+
+  carregarResumo();
+
+</script>
+</body>
+</html>
+
+

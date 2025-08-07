@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.7">
+  <title>Resumo do Pedido - Pagamento via Pix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styleconfirmacao.css" />
+</head>
+<body>
+
+  <div class="container">
+    <h2>Resumo do Pedido 💜</h2>
+
+    <div class="resumo-pedido">
+      <h3>Resumo do Pedido</h3>
+      <p><strong>Itens:</strong> <span id="itens"></span></p>
+      <p><strong>Total Produtos:</strong> R$ <span id="totalProdutos"></span></p>
+      <p><strong>Frete:</strong> R$ <span id="frete"></span></p>
+      <p><strong>Total a Pagar:</strong> R$ <span id="totalGeral"></span></p>
+      <p><strong>Observação:</strong> <span id="observacaoPedido">Nenhuma observação</span></p>
+    </div>
+
+    <div class="info-entrega">
+      <h3>Forma de Entrega</h3>
+      <p id="entrega"></p>
+    </div>
+
+    <div class="info-pagamento">
+      <h3>Forma de Pagamento</h3>
+      <p><strong>Tipo:</strong> <span id="tipoPagamento">Pagamento Online</span></p>
+      <p><strong>Método:</strong> <span id="formaPagamento">Pix</span></p>
+    </div>
+
+    <div class="info-cliente">
+      <h3>Dados do Cliente</h3>
+      <p><strong>Nome:</strong> <span id="nome"></span></p>
+      <p><strong>Telefone:</strong> <span id="celular"></span></p>
+
+      <div id="enderecoCliente">
+        <p><strong>CEP:</strong> <span id="cep"></span></p>
+        <p><strong>Cidade:</strong> <span id="cidade"></span></p>
+        <p><strong>Bairro:</strong> <span id="bairro"></span></p>
+        <p><strong>Rua:</strong> <span id="rua"></span></p>
+        <p><strong>Número:</strong> <span id="numero"></span></p>
+        <p><strong>Complemento:</strong> <span id="complemento"></span></p>
+        <p><strong>Referência:</strong> <span id="referencia"></span></p>
+      </div>
+
+      <div id="enderecoLoja" style="display: none;">
+        <p><strong>Endereço para Retirada:</strong></p>
+        <p>Rua Zumbi dos Palmares, 140</p>
+        <p>Bairro Bandeiras – Osasco – SP</p>
+        <p>CEP: 06160-201</p>
+      </div>
+    </div>
+
+    <button class="btn-confirmar" onclick="irParaPagamentoPix()">Ir para o pagamento</button>
+    <button class="voltar" onclick="window.history.back()">←</button>
+  </div>
+
+  <script>
+     // Garante que a forma de pagamento seja Pix
+  localStorage.setItem('formaPagamento', 'Pix');
+
+  const itens = JSON.parse(localStorage.getItem('itensCarrinho')) || [];
+  const totalProdutos = parseFloat(localStorage.getItem('valorPedido')) || 0;
+
+  const itensTexto = itens.map(item => `${item.quantidade}x ${item.nome}`).join(', ') || 'Nenhum item';
+  document.getElementById('itens').textContent = itensTexto;
+  document.getElementById('totalProdutos').textContent = totalProdutos.toFixed(2).replace('.', ',');
+
+    const cepCliente = localStorage.getItem('cep') || '';
+    const cepLoja = '06160201';
+
+    const entrega = localStorage.getItem('tipoEntrega');
+    const dataAgendamento = localStorage.getItem('agendamentoData');
+    const horaAgendamento = localStorage.getItem('agendamentoHora');
+
+    function calcularFrete(cepDestino) {
+      const cepNumCliente = parseInt(cepDestino.replace(/\D/g, ''));
+      const cepNumLoja = parseInt(cepLoja);
+      const diff = Math.abs(cepNumCliente - cepNumLoja);
+
+      if (diff <= 100) return 0;
+      else if (diff <= 300) return 0;
+      else if (diff <= 600) return 3;
+      else if (diff <= 1000) return 6;
+      else if (diff <= 1300) return 9;
+      else if (diff <= 1600) return 12;
+      else if (diff <= 1900) return 15;
+      else if (diff <= 2000) return 18;
+      else if (diff <= 2300) return 21;
+      else return 24;
+    }
+
+    let frete = 0;
+    if (entrega === 'Delivery' || entrega === 'Agendamento Delivery') {
+      frete = calcularFrete(cepCliente);
+      document.getElementById('frete').textContent = frete.toFixed(2).replace('.', ',');
+    } else {
+      document.getElementById('frete').textContent = '0,00';
+    }
+
+    const totalGeral = totalProdutos + frete;
+    document.getElementById('totalGeral').textContent = totalGeral.toFixed(2).replace('.', ',');
+
+    let entregaTexto = '';
+    if (entrega === 'Agendamento Delivery') {
+      entregaTexto = `Agendamento para entrega em ${dataAgendamento} às ${horaAgendamento}`;
+    } else if (entrega === 'Agendamento Retirada') {
+      entregaTexto = `Agendamento para retirada em ${dataAgendamento} às ${horaAgendamento}`;
+    } else if (entrega === 'Delivery') {
+      entregaTexto = 'Entrega Delivery';
+    } else if (entrega === 'Retirar no Balcão') {
+      entregaTexto = 'Retirada no Local';
+    } else {
+      entregaTexto = 'Não informado';
+    }
+    document.getElementById('entrega').textContent = entregaTexto;
+
+    // Preencher cliente
+    const get = (key) => localStorage.getItem(key) || 'Não informado';
+    document.getElementById('nome').textContent = get('nome');
+    document.getElementById('celular').textContent = get('telefone');
+    document.getElementById('numero').textContent = get('numero');
+
+    if (entrega === 'Agendamento Retirada' || entrega === 'Retirar no Balcão') {
+      document.getElementById('enderecoCliente').style.display = 'none';
+      document.getElementById('enderecoLoja').style.display = 'block';
+    } else {
+      document.getElementById('cep').textContent = get('cep');
+      document.getElementById('cidade').textContent = get('cidade');
+      document.getElementById('bairro').textContent = get('bairro');
+      document.getElementById('rua').textContent = get('rua');
+      document.getElementById('complemento').textContent = get('complemento');
+      document.getElementById('referencia').textContent = get('referencia');
+    }
+
+    // Pegar observação do pedido e preencher
+    document.getElementById('observacaoPedido').textContent =
+      localStorage.getItem('observacaoPedido') || 'Nenhuma observação';
+
+    function irParaPagamentoPix() {
+      const nome = localStorage.getItem('nome') || '';
+      const telefone = localStorage.getItem('telefone') || '';
+      const observacao = localStorage.getItem('observacaoPedido') || '';
+      const itens = JSON.parse(localStorage.getItem('itensCarrinho')) || [];
+      const entrega = localStorage.getItem('tipoEntrega') || '';
+      const formaPagamento = 'Pix'; // fixado aqui também para garantir
+
+      const endereco = `
+        CEP: ${localStorage.getItem('cep') || ''}
+        Cidade: ${localStorage.getItem('cidade') || ''}
+        Bairro: ${localStorage.getItem('bairro') || ''}
+        Rua: ${localStorage.getItem('rua') || ''}
+        Número: ${localStorage.getItem('numero') || ''}
+        Complemento: ${localStorage.getItem('complemento') || ''}
+        Referência: ${localStorage.getItem('referencia') || ''}
+      `.trim();
+
+      const valorPedido = parseFloat(localStorage.getItem('valorPedido')) || 0;
+      const valorFrete = parseFloat(localStorage.getItem('valorFrete')) || 0;
+      const total = `R$ ${(valorPedido + valorFrete).toFixed(2).replace('.', ',')}`;
+
+      const pedido = {
+        nome,
+        telefone,
+        observacao,
+        itens,
+        entrega,
+        formaPagamento,
+        endereco,
+        total,
+        data: new Date().toLocaleString()
+      };
+
+      const chave = `pedidos_${telefone}`;
+      const pedidosExistentes = JSON.parse(localStorage.getItem(chave)) || [];
+      pedidosExistentes.push(pedido);
+      localStorage.setItem(chave, JSON.stringify(pedidosExistentes));
+
+      window.location.href = 'pagamento-pix.html';
+    }
+  </script>
+
+</body>
+</html>

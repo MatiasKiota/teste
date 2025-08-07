@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1,0">
+  <title>⭐ Avaliações dos Clientes - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #fff0f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d6336c;
+      margin-bottom: 20px;
+    }
+
+    /* Container das avaliações em grid lado a lado */
+    .avaliacao-container {
+      max-width: 900px;
+      margin: 0 auto 30px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card avaliação */
+    .avaliacao {
+      background-color: #ffe4ec;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 5px #ffc0cb;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 180px;
+    }
+
+    .estrelinhas {
+      font-size: 18px;
+      color: gold;
+      margin-bottom: 10px;
+    }
+
+    .foto-avaliacao {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+      object-fit: cover;
+      max-height: 140px;
+    }
+
+    /* Formulário */
+    form {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 10px #ffc0cb;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    /* Estrelas do formulário */
+    #estrelas {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      user-select: none;
+    }
+
+    .estrela {
+      font-size: 35px;
+      cursor: pointer;
+      color: #ccc;
+      transition: color 0.3s ease, box-shadow 0.3s ease;
+      padding: 3px;
+      border-radius: 5px;
+    }
+
+    .estrela.selecionada {
+      color: gold;
+      box-shadow: 0 0 8px 2px gold;
+    }
+
+    /* Destaque extra na estrela clicada */
+    .estrela.clicada {
+      outline: 2px solid #ffea00;
+      box-shadow: 0 0 15px 5px #ffd700;
+      border-radius: 50%;
+    }
+
+    .anonimo-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      background: #d63384;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #c2185b;
+    }
+
+    .voltar {
+      display: block;
+      margin: 20px auto;
+      text-align: center;
+      background: #ff69b4;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      text-decoration: none;
+      width: fit-content;
+      font-weight: bold;
+    }
+
+    .voltar:hover {
+      background-color: #ff1493;
+    }
+  </style>
+</head>
+<body>
+  <h1>⭐ Avaliações dos Clientes</h1>
+
+  <!-- Lista de avaliações -->
+  <div class="avaliacao-container" id="listaAvaliacoes"></div>
+
+  <!-- Formulário -->
+  <form id="formAvaliacao">
+    <label>Seu nome:</label>
+    <input type="text" id="nome" placeholder="Deixe em branco para ficar anônimo" />
+
+    <div class="anonimo-check">
+      <input type="checkbox" id="anonimo" />
+      <label for="anonimo">Enviar como anônimo</label>
+    </div>
+
+    <label>Quantas estrelas você dá?</label>
+    <div id="estrelas">
+      <span class="estrela" data-value="1">⭐</span>
+      <span class="estrela" data-value="2">⭐</span>
+      <span class="estrela" data-value="3">⭐</span>
+      <span class="estrela" data-value="4">⭐</span>
+      <span class="estrela" data-value="5">⭐</span>
+    </div>
+
+    <label>Comentário:</label>
+    <textarea id="comentario" rows="4" placeholder="O que achou dos nossos doces?"></textarea>
+
+    <label>Foto (opcional):</label>
+    <input type="file" id="foto" accept="image/*" />
+
+    <button type="submit">Enviar Avaliação</button>
+  </form>
+
+  <a href="index.html" class="voltar">⬅ Voltar ao Cardápio</a>
+
+  <script>
+    const estrelasEl = document.querySelectorAll("#estrelas .estrela");
+    let estrelasSelecionadas = 0;
+
+    function atualizarEstrelas(num) {
+      estrelasSelecionadas = num;
+      estrelasEl.forEach(star => {
+        const valor = Number(star.dataset.value);
+        star.classList.toggle("selecionada", valor <= num);
+        star.classList.toggle("clicada", valor === num);
+      });
+    }
+
+    estrelasEl.forEach(star => {
+      star.addEventListener("click", () => {
+        atualizarEstrelas(Number(star.dataset.value));
+      });
+
+      star.addEventListener("mouseover", () => {
+        const hoverValue = Number(star.dataset.value);
+        estrelasEl.forEach(s => {
+          s.classList.toggle("selecionada", Number(s.dataset.value) <= hoverValue);
+        });
+      });
+
+      star.addEventListener("mouseout", () => {
+        atualizarEstrelas(estrelasSelecionadas);
+      });
+    });
+
+    const form = document.getElementById("formAvaliacao");
+    const lista = document.getElementById("listaAvaliacoes");
+
+    let avaliacoes = JSON.parse(localStorage.getItem("avaliacoesMamis")) || [];
+
+    function salvarLocalStorage() {
+      localStorage.setItem("avaliacoesMamis", JSON.stringify(avaliacoes));
+    }
+
+    function mostrarAvaliacoes() {
+      lista.innerHTML = "";
+
+      if (avaliacoes.length === 0) {
+        lista.innerHTML = "<p style='text-align:center;'>Nenhuma avaliação ainda. Seja o primeiro a avaliar! 🍰</p>";
+        return;
+      }
+
+      avaliacoes.forEach(av => {
+        const div = document.createElement("div");
+        div.className = "avaliacao";
+        div.innerHTML = `
+          <div class="estrelinhas">${"⭐".repeat(av.estrelas)}</div>
+          <p><strong>${av.nome || "Anônimo"}</strong></p>
+          <p>${av.comentario}</p>
+          ${av.foto ? `<img src="${av.foto}" class="foto-avaliacao" alt="Foto da avaliação">` : ""}
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("anonimo").checked ? "Anônimo" : document.getElementById("nome").value.trim();
+      const comentario = document.getElementById("comentario").value.trim();
+
+      if (estrelasSelecionadas === 0 || comentario === "") {
+        alert("Por favor, preencha pelo menos a nota e o comentário!");
+        return;
+      }
+
+      const file = document.getElementById("foto").files[0];
+
+      const salvarAvaliacao = (fotoBase64 = "") => {
+        const novaAvaliacao = {
+          nome,
+          estrelas: estrelasSelecionadas,
+          comentario,
+          foto: fotoBase64
+        };
+        avaliacoes.unshift(novaAvaliacao);
+        salvarLocalStorage();
+        mostrarAvaliacoes();
+        form.reset();
+        atualizarEstrelas(0); // reseta as estrelas visuais
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          salvarAvaliacao(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        salvarAvaliacao();
+      }
+    });
+
+    mostrarAvaliacoes();
+  </script>
+</body>
+</html>
+

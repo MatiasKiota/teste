@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=2">
+  <title>Ajustar Preços - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #ffe6fa);
+      margin: 20px;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Fundo com estrelas brilhantes que se movem */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 200%; height: 200%;
+      background-image:
+        radial-gradient(2px 2px at 10px 20px, #fff 90%, transparent 100%),
+        radial-gradient(2px 2px at 50px 70px, #fff 90%, transparent 100%),
+        radial-gradient(2.5px 2.5px at 90px 100px, #fff 90%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 130px 150px, #fff 90%, transparent 100%);
+      background-repeat: repeat;
+      background-size: 40px 40px;
+      animation: brilho 30s linear infinite;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    @keyframes brilho {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(-200px, -200px);
+      }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #c93a87;
+      font-family: 'Pacifico', cursive;
+      font-size: 2.2em;
+      text-shadow: 0 0 8px #ffbde0;
+      z-index: 1;
+      position: relative;
+    }
+
+    .produto {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 10px 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(201, 58, 135, 0.25);
+      align-items: center;
+      transition: transform 0.2s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .produto:hover {
+      transform: scale(1.01);
+      box-shadow: 0 4px 10px rgba(201, 58, 135, 0.4);
+    }
+
+    .produto label {
+      flex: 1;
+      font-weight: 600;
+      color: #b33a7c;
+    }
+
+    .produto input[type="text"] {
+      width: 80px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 2px solid #d86fa9;
+      font-weight: bold;
+      text-align: right;
+      background-color: #fff0f8;
+    }
+
+    #btn-salvar {
+      display: block;
+      margin: 40px auto 30px auto;
+      padding: 14px 35px;
+      font-size: 16px;
+      background-color: #d64f96;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(214, 79, 150, 0.3);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      z-index: 1;
+      position: relative;
+    }
+
+    #btn-salvar:hover {
+      background-color: #ad2f70;
+      transform: scale(1.05);
+    }
+
+    .btn-voltar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 18px;
+      font-size: 15px;
+      background-color: #ff99cc;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .btn-voltar:hover {
+      background-color: #e06699;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+<a class="btn-voltar" href="todos-pedidos.html">← Voltar</a>
+
+<h1>Ajustar Preços - Delícias da Mamis</h1>
+
+<div id="lista-produtos">
+  <!-- Produtos inseridos via JavaScript -->
+</div>
+
+<button id="btn-salvar">Salvar Preços</button>
+
+<script>
+  const produtosFixos = [
+    { nome: "Kit de Brigadeiro", preco: "12,00" },
+    { nome: "Mousse de Chocolate", preco: "10,00" },
+    { nome: "Mousse de Limão", preco: "8,00" },
+    { nome: "Mousse de Morango", preco: "8,00" },
+    { nome: "Mousse de Maracujá", preco: "8,00" },
+    { nome: "Mousse de Maracujá com cobertura de chocolate", preco: "10,00" },
+    { nome: "Mini Pudim de Leite Condensado", preco: "8,00" },
+    { nome: "Mini Pudim de Chocolate", preco: "10,00" },
+    { nome: "Espetinho de Morango", preco: "15,00" },
+    { nome: "Espetinho de Uva", preco: "15,00" },
+    { nome: "Espetinho Misto", preco: "15,00" },
+    { nome: "Brownie (1 pedaço)", preco: "8,00" },
+    { nome: "Brownie mergulhado no chocolate", preco: "12,00" },
+    { nome: "Chocolate com morango", preco: "12,00" },
+    { nome: "Chocolate com leite ninho com morango", preco: "12,00" },
+    { nome: "Leite ninho com morango", preco: "12,00" },
+    { nome: "Leite ninho com pó de leite ninho por cima", preco: "12,00" },
+    { nome: "Chocolate com granulado de chocolate por cima", preco: "12,00" },
+    { nome: "Abacaxi com ninho", preco: "12,00" },
+    { nome: "Pote de Canjica", preco: "8,00" },
+    { nome: "Maçã do Amor", preco: "12,00" },
+    { nome: "Morango do Amor", preco: "5,00" },
+    { nome: "Uva do Amor", preco: "5,00" },
+  ];
+const produtos = [...produtosFixos];
+
+// Adiciona os produtos cadastrados dinamicamente
+const cadastradosJSON = localStorage.getItem("produtos_mamis");
+if (cadastradosJSON) {
+  const cadastrados = JSON.parse(cadastradosJSON);
+  cadastrados.forEach(p => {
+    produtos.push({
+      nome: p.nome,
+      preco: p.preco || "0,00"
+    });
+  });
+}
+
+
+
+  const listaEl = document.getElementById("lista-produtos");
+
+  function criarItemProduto(produto) {
+    const div = document.createElement("div");
+    div.className = "produto";
+
+    const label = document.createElement("label");
+    label.textContent = produto.nome;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = produto.preco;
+    input.pattern = "\\d{1,3},\\d{2}";
+    input.title = "Formato: 00,00";
+    input.id = "preco-" + produto.nome.replace(/[^a-zA-Z0-9]/g, "_");
+
+    div.appendChild(label);
+    div.appendChild(input);
+    return div;
+  }
+
+  function carregarPrecos() {
+    const precosSalvos = JSON.parse(localStorage.getItem("precos_mamis"));
+    if (precosSalvos) {
+      produtos.forEach(p => {
+        if (precosSalvos[p.nome]) {
+          p.preco = precosSalvos[p.nome];
+        }
+      });
+    }
+  }
+
+  function salvarPrecos() {
+    const precosParaSalvar = {};
+    let valid = true;
+
+    produtos.forEach(p => {
+      const input = document.getElementById("preco-" + p.nome.replace(/[^a-zA-Z0-9]/g, "_"));
+      let valor = input.value.trim();
+
+      if (!/^\d{1,3},\d{2}$/.test(valor)) {
+        alert(`Preço inválido para "${p.nome}". Use o formato 00,00`);
+        input.focus();
+        valid = false;
+        return;
+      }
+
+      precosParaSalvar[p.nome] = valor;
+    });
+
+    if (!valid) return;
+
+    localStorage.setItem("precos_mamis", JSON.stringify(precosParaSalvar));
+    alert("Preços salvos com sucesso!");
+  }
+
+  function montarLista() {
+    listaEl.innerHTML = "";
+    produtos.forEach(p => {
+      listaEl.appendChild(criarItemProduto(p));
+    });
+  }
+
+  carregarPrecos();
+  montarLista();
+  document.getElementById("btn-salvar").addEventListener("click", salvarPrecos);
+</script>
+
+</body>
+</html>

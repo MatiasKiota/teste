@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background: url('https://img.freepik.com/vector-gratis/fondo-textura-acuarela-color-pastel-suave_1017-39359.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Quicksand', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #6a296a;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 60px;
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.97);
+  max-width: 520px;
+  width: 90%;
+  padding: 35px 45px;
+  border-radius: 22px;
+  box-shadow: 0 8px 20px rgba(210, 90, 149, 0.35);
+  border: 3px dashed #f3a6c2;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.container:hover {
+  box-shadow: 0 12px 30px rgba(210, 90, 149, 0.5);
+}
+
+h2 {
+  text-align: center;
+  color: #d25a95;
+  font-size: 28px;
+  margin-bottom: 45px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(210, 90, 149, 0.4);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 2px solid #f4c3d8;
+  border-radius: 14px;
+  padding: 12px 18px;
+  background-color: #fff0f5;
+  box-shadow: 2px 2px 10px rgba(210, 90, 149, 0.1);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.input-group:focus-within {
+  border-color: #d25a95;
+  box-shadow: 0 0 10px 3px #d25a95aa;
+}
+
+.input-group img {
+  width: 28px;
+  height: 28px;
+  margin-right: 14px;
+  user-select: none;
+  filter: drop-shadow(0 1px 1px #b36e8f);
+  transition: filter 0.3s ease;
+}
+
+.input-group:focus-within img {
+  filter: drop-shadow(0 2px 3px #d25a95cc);
+}
+
+input[type="text"] {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 17px;
+  color: #6a296a;
+  flex: 1;
+  font-weight: 600;
+  font-family: 'Quicksand', sans-serif;
+  caret-color: #d25a95;
+  transition: color 0.3s ease;
+}
+
+input::placeholder {
+  color: #cfa2c1;
+  transition: opacity 0.3s ease;
+}
+
+input:focus::placeholder {
+  opacity: 0.35;
+}
+
+.btn-continuar {
+  background: linear-gradient(135deg, #d25a95, #b03a6b);
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  border: none;
+  padding: 16px 0;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(210, 90, 149, 0.6);
+  transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.btn-continuar:hover {
+  background: linear-gradient(135deg, #b03a6b, #8c2754);
+  box-shadow: 0 9px 25px rgba(176, 58, 107, 0.75);
+  transform: translateY(-3px);
+}
+
+.btn-continuar:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(176, 58, 107, 0.5);
+}
+
+@media (max-width: 420px) {
+  .container {
+    padding: 28px 20px;
+  }
+  .input-group img {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+  }
+  input[type="text"] {
+    font-size: 15px;
+  }
+  .btn-continuar {
+    font-size: 16px;
+    padding: 14px 0;
+  }
+}
+
+.voltar {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: none;
+  border: none;
+  font-size: 48px; /* maior e mais visível */
+  font-weight: bold;
+  color: #fff0f5; /* tom bem claro */
+  cursor: pointer;
+  z-index: 1000;
+  animation: brilhoSeta 1.5s infinite alternate;
+  text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4, 0 0 25px #ffaadd;
+  transition: transform 0.3s ease;
+}
+
+@keyframes brilhoSeta {
+  from {
+    transform: scale(1);
+    text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4;
+  }
+  to {
+    transform: scale(1.15);
+    text-shadow: 0 0 16px #ffaadd, 0 0 24px #ff69b4;
+  }
+}

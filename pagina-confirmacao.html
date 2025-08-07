@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Confirmar Pedido - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styleconfirmacao.css" />
+  <style>
+    /* Popup de confirmação - estilo simples para ativar */
+    .popup-confirmacao {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 192, 203, 0.8);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+    .popup-confirmacao.ativo {
+      display: flex;
+    }
+    .popup-conteudo {
+      background: #fff0f8;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #ff99cc;
+      max-width: 320px;
+      text-align: center;
+      position: relative;
+    }
+    .fechar-popup {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-size: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .botao-voltar-inicio {
+      margin-top: 10px;
+      padding: 10px 16px;
+      background-color: #ff66cc;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .botao-voltar-inicio:hover {
+      background-color: #ff33aa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Confirmar Pedido 💜</h2>
+
+    <div class="resumo-pedido">
+      <h3>Resumo do Pedido</h3>
+      <p><strong>Itens:</strong> <span id="itens"></span></p>
+      <p><strong>Total Produtos:</strong> R$ <span id="totalProdutos"></span></p>
+      <p><strong>Frete:</strong> R$ <span id="frete"></span></p>
+      <p><strong>Total a Pagar:</strong> R$ <span id="totalGeral"></span></p>
+
+      <p><strong>Observação:</strong> <span id="observacaoPedido">Nenhuma observação</span></p>
+    </div>
+
+    <div class="info-entrega">
+      <h3>Forma de Entrega</h3>
+      <p id="entrega"></p>
+    </div>
+
+    <div class="info-pagamento">
+      <h3>Forma de Pagamento</h3>
+      <p><strong>Tipo:</strong> <span id="tipoPagamento"></span></p>
+      <p><strong>Método:</strong> <span id="formaPagamento"></span></p>
+    </div>
+
+    <div class="info-cliente">
+      <h3>Dados do Cliente</h3>
+      <p><strong>Nome:</strong> <span id="nome"></span></p>
+      <p><strong>Telefone:</strong> <span id="telefone"></span></p>
+
+      <div id="enderecoCliente">
+        <p><strong>CEP:</strong> <span id="cep"></span></p>
+        <p><strong>Cidade:</strong> <span id="cidade"></span></p>
+        <p><strong>Bairro:</strong> <span id="bairro"></span></p>
+        <p><strong>Rua:</strong> <span id="rua"></span></p>
+        <p><strong>Número:</strong> <span id="numero"></span></p>
+        <p><strong>Complemento:</strong> <span id="complemento"></span></p>
+        <p><strong>Referência:</strong> <span id="referencia"></span></p>
+      </div>
+
+      <div id="enderecoLoja" style="display: none;">
+        <p><strong>Endereço para Retirada:</strong></p>
+        <p>Rua Zumbi dos Palmares, 140</p>
+        <p>Bairro Bandeiras – Osasco – SP</p>
+        <p>CEP: 06160-201</p>
+      </div>
+    </div>
+
+    <button class="btn-confirmar" onclick="enviarParaWhatsApp()">Confirmar Pedido via WhatsApp</button>
+    <button class="voltar" onclick="window.history.back()">← Voltar</button>
+  </div>
+
+  <!-- Janela de agradecimento -->
+  <div class="popup-confirmacao" id="popupConfirmacao">
+    <div class="popup-conteudo">
+      <button id="fecharPopup" class="fechar-popup">❌</button>
+
+      <img src="https://media.giphy.com/media/DyQrKMpqkAhNHZ1iWe/giphy.gif" alt="Pedido confirmado" />
+      <h3>Pedido Confirmado! 💖</h3>
+      <p>Agora é só aguardar a mensagem da Mamis 🍬</p>
+      <button class="botao-voltar-inicio" onclick="window.location.href='index.html'">Voltar ao Início</button>
+    </div>
+  </div>
+
+  <script>
+    // Função utilitária para pegar valor do localStorage com fallback
+    const get = (key) => localStorage.getItem(key) || 'Não informado';
+
+    // Itens e valores do carrinho
+    const itens = JSON.parse(localStorage.getItem('itensCarrinho')) || [];
+    const totalSemFrete = parseFloat(localStorage.getItem('valorPedido')) || 0;
+    const entrega = localStorage.getItem('tipoEntrega');
+    const dataAgendamento = localStorage.getItem('agendamentoData');
+    const horaAgendamento = localStorage.getItem('agendamentoHora');
+    const formaPagamento = localStorage.getItem('formaPagamento') || 'Não informado';
+
+    const cepCliente = get('cep') || '';
+    const cepLoja = '06160201';
+
+    function calcularFrete(cepDestino) {
+      const cepNumCliente = parseInt(cepDestino.replace(/\D/g, ''));
+      const cepNumLoja = parseInt(cepLoja);
+      const diff = Math.abs(cepNumCliente - cepNumLoja);
+      if (diff <= 100) return 0;
+      else if (diff <= 300) return 0;
+      else if (diff <= 600) return 3;
+      else if (diff <= 1000) return 6;
+      else if (diff <= 1300) return 9;
+      else if (diff <= 1600) return 12;
+      else if (diff <= 1900) return 15;
+      else if (diff <= 2000) return 18;
+      else if (diff <= 2300) return 21;
+      else return 24;
+    }
+
+    let frete = 0;
+    if (entrega === 'Delivery' || entrega === 'Agendamento Delivery') {
+      frete = calcularFrete(cepCliente);
+    }
+
+    const totalGeral = totalSemFrete + frete;
+    const itensTexto = itens.map(item => `${item.quantidade}x ${item.nome}`).join(', ') || 'Nenhum item';
+
+    // Preenche dados no HTML
+    document.getElementById('itens').textContent = itensTexto;
+    document.getElementById('totalProdutos').textContent = totalSemFrete.toFixed(2).replace('.', ',');
+    document.getElementById('frete').textContent = frete.toFixed(2).replace('.', ',');
+    document.getElementById('totalGeral').textContent = totalGeral.toFixed(2).replace('.', ',');
+
+    const observacao = localStorage.getItem('observacaoPedido') || 'Nenhuma observação';
+    document.getElementById('observacaoPedido').textContent = observacao;
+
+    let entregaTexto = '';
+    if (entrega === 'Agendamento Delivery') {
+      entregaTexto = `Agendamento para entrega em ${dataAgendamento} às ${horaAgendamento}`;
+    } else if (entrega === 'Agendamento Retirada') {
+      entregaTexto = `Agendamento para retirada em ${dataAgendamento} às ${horaAgendamento}`;
+    } else if (entrega === 'Delivery') {
+      entregaTexto = 'Entrega Delivery';
+    } else if (entrega === 'Retirar no Balcão') {
+      entregaTexto = 'Retirada no Local';
+    } else {
+      entregaTexto = 'Não informado';
+    }
+    document.getElementById('entrega').textContent = entregaTexto;
+
+    const tipoPagamento = (entrega === 'Retirar no Balcão' || entrega === 'Agendamento Retirada')
+      ? 'Pagamento na Retirada'
+      : 'Pagamento na Retirada';
+    document.getElementById('tipoPagamento').textContent = tipoPagamento;
+    document.getElementById('formaPagamento').textContent = formaPagamento;
+
+    document.getElementById('nome').textContent = get('nome');
+    document.getElementById('telefone').textContent = get('telefone');
+    document.getElementById('numero').textContent = get('numero');
+
+    const isRetirada = entrega === 'Agendamento Retirada' || entrega === 'Retirar no Balcão';
+    if (isRetirada) {
+      document.getElementById('enderecoCliente').style.display = 'none';
+      document.getElementById('enderecoLoja').style.display = 'block';
+    } else {
+      document.getElementById('cep').textContent = cepCliente;
+      document.getElementById('cidade').textContent = get('cidade');
+      document.getElementById('bairro').textContent = get('bairro');
+      document.getElementById('rua').textContent = get('rua');
+      document.getElementById('complemento').textContent = get('complemento');
+      document.getElementById('referencia').textContent = get('referencia');
+    }
+
+    // Função que envia a mensagem pro WhatsApp e salva o pedido no localStorage
+    function enviarParaWhatsApp() {
+      const nome = get('nome');
+      const telefone = get('telefone');
+      const cidade = get('cidade');
+      const bairro = get('bairro');
+      const rua = get('rua');
+      const numero = get('numero');
+      const complemento = get('complemento');
+      const referencia = get('referencia');
+
+      let enderecoTexto = '';
+      if (isRetirada) {
+        enderecoTexto = `📍 *Endereço para Retirada:*
+Rua Zumbi dos Palmares, 140
+Bairro Bandeiras – Osasco – SP
+CEP: 06160-201`;
+      } else {
+        enderecoTexto = `📍 *Endereço:*
+Rua ${rua}, Nº ${numero}, ${bairro}, ${cidade} - CEP: ${cepCliente}
+Complemento: ${complemento}
+Referência: ${referencia}`;
+      }
+
+      let msg = `🍬 *Novo Pedido - Delícias da Mamis* 🍬
+
+👤 *Nome:* ${nome}
+📞 *Telefone:* ${telefone}
+
+📦 *Entrega:* ${entregaTexto}
+
+💳 *Pagamento:* Retirada
+🧾 *Método:* ${formaPagamento}
+
+🧁 *Itens:* ${itensTexto}
+🚚 *Frete:* R$ ${frete.toFixed(2).replace('.', ',')}
+💰 *Total:* R$ ${totalGeral.toFixed(2).replace('.', ',')}
+
+📌 *Observação:* ${observacao}
+
+${enderecoTexto}`;
+
+      // Salvar o pedido no localStorage por telefone
+      const pedido = {
+        data: new Date().toLocaleString(),
+        nome,
+        itens: itensTexto,
+        total: `R$ ${totalGeral.toFixed(2).replace('.', ',')}`,
+        entrega: entregaTexto,
+        pagamento: tipoPagamento + ' - ' + formaPagamento,
+        observacao,
+        endereco: enderecoTexto
+      };
+
+      const historicoPedidos = JSON.parse(localStorage.getItem(`pedidos_${telefone}`)) || [];
+      historicoPedidos.push(pedido);
+      localStorage.setItem(`pedidos_${telefone}`, JSON.stringify(historicoPedidos));
+// Descontar do estoque os itens comprados
+itens.forEach(item => {
+  const chaveEstoque = "estoque_" + item.nome;
+  const estoqueAtual = parseInt(localStorage.getItem(chaveEstoque)) || 0;
+  const novoEstoque = Math.max(estoqueAtual - item.quantidade, 0);
+  localStorage.setItem(chaveEstoque, novoEstoque);
+});
+
+      const telefoneLoja = '5511942039879';
+      const url = `https://wa.me/${telefoneLoja}?text=${encodeURIComponent(msg)}`;
+      
+
+      // Mostrar popup confirmação
+      const popup = document.getElementById('popupConfirmacao');
+      popup.classList.add('ativo');
+// Enviar para Google Sheets
+fetch("https://script.google.com/macros/s/AKfycbz70DRjYDTC-fqGNGQc9CyJnowt0oRB3jsF5kY5tpfm200He_QdMqywTAyXNxbLRUKa/exec", {
+  method: "POST",
+  body: JSON.stringify(pedido),
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
+
+      // Abrir WhatsApp em nova aba após breve delay
+      setTimeout(() => {
+        window.open(url, '_blank');
+      }, 500);
+    }
+
+    // Botão fechar popup
+    document.getElementById('fecharPopup').addEventListener('click', () => {
+      document.getElementById('popupConfirmacao').classList.remove('ativo');
+    });
+  </script>
+
+</body>
+</html>

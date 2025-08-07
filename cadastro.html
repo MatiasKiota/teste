@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cadastro - Delícias da Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: url('https://img.freepik.com/vetores-gratis/fundo-abstrato-com-coracoes-azuis-brilhantes_53876-96400.jpg?semt=ais_hybrid&w=740');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 15px;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 0 25px #ffb6c1a9;
+      width: 100%;
+      max-width: 550px;
+      animation: popIn 1.3s ease-out;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6) rotate(-5deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: #ff4d88;
+      margin-bottom: 30px;
+      animation: bounceText 2s infinite ease-in-out;
+    }
+
+    @keyframes bounceText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    form {
+      display: grid;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 3px;
+      font-size: 0.95em;
+    }
+
+    input {
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid #ffbad2;
+      transition: 0.3s;
+      font-size: 0.95em;
+    }
+
+    input:focus {
+      border-color: #ff69b4;
+      box-shadow: 0 0 10px #ffcce0;
+      transform: scale(1.03);
+      outline: none;
+    }
+
+    .grupo-duplo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .cep-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cep-info {
+      font-size: 0.85em;
+      color: #ff69b4;
+      margin-top: 6px;
+      cursor: pointer;
+      align-self: flex-end;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .cep-info:hover {
+      color: #d2487a;
+      text-decoration: underline;
+    }
+
+    button {
+      background: linear-gradient(to right, #ff69b4, #ffa6c9);
+      border: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1em;
+      padding: 12px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.4s;
+      margin-top: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    button:hover {
+      transform: scale(1.05) rotate(-1deg);
+      box-shadow: 0 0 15px #ff69b4aa;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 #ff99cc80; }
+      70% { box-shadow: 0 0 0 15px transparent; }
+      100% { box-shadow: 0 0 0 0 transparent; }
+    }
+
+    /* MODAL ESTILOS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 77, 136, 0.15);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 10000;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+      animation: slideUp 0.5s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 25px 30px 35px 30px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 10px 35px rgba(255,77,136,0.25);
+      color: #ff4d88;
+      font-weight: 600;
+      font-size: 1.15em;
+      position: relative;
+      text-align: center;
+      user-select: none;
+    }
+
+    .modal-box p {
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .modal-box button.btn-close {
+      position: absolute;
+      top: 12px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      font-weight: 900;
+      color: #ff4d88;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+
+    .modal-box button.btn-close:hover {
+      color: #b03a6b;
+    }
+
+    .modal-box button.btn-voltar {
+      background: #ff69b4;
+      border-radius: 25px;
+      padding: 12px 28px;
+      font-weight: 700;
+      font-size: 1em;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 5px 15px rgba(255,105,180,0.4);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    .modal-box button.btn-voltar:hover {
+      background-color: #d2487a;
+    }
+
+    @media (max-width: 500px) {
+      .grupo-duplo {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>💗 Cadastre-se</h1>
+    <form id="form-cadastro" autocomplete="off">
+      <label for="nome">Nome completo</label>
+      <input type="text" id="nome" required autocomplete="name" />
+
+      <label for="telefone">Telefone</label>
+      <input type="tel" id="telefone" required autocomplete="tel" />
+
+      <div class="grupo-duplo">
+        <div class="cep-container">
+          <label for="cep">CEP</label>
+          <input type="text" id="cep" required autocomplete="postal-code" maxlength="9" placeholder="Digite seu CEP" />
+          <div class="cep-info" id="cepHelp" title="Clique para consultar seu CEP">
+            Não sei meu CEP
+          </div>
+        </div>
+        <div>
+          <label for="numero">Número</label>
+          <input type="text" id="numero" required autocomplete="off" />
+        </div>
+      </div>
+
+      <label for="rua">Rua</label>
+      <input type="text" id="rua" required autocomplete="street-address" />
+
+      <label for="bairro">Bairro</label>
+      <input type="text" id="bairro" required autocomplete="address-level2" />
+
+      <label for="cidade">Cidade</label>
+      <input type="text" id="cidade" required autocomplete="address-level1" />
+
+      <label for="complemento">Complemento</label>
+      <input type="text" id="complemento" autocomplete="off" />
+
+      <label for="referencia">Referência (opcional)</label>
+      <input type="text" id="referencia" autocomplete="off" />
+
+      <button type="submit">Salvar Cadastro 💖</button>
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+    <div class="modal-box" role="alert">
+      <button aria-label="Fechar modal" class="btn-close" id="btnCloseModal">&times;</button>
+      <p>Cadastro salvo com sucesso!<br>Você não precisa preencher seus dados toda vez que entrar no site.</p>
+      <button class="btn-voltar" id="btnVoltarIndex">Voltar para a página inicial</button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('form-cadastro');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnVoltarIndex = document.getElementById('btnVoltarIndex');
+    const cepInput = document.getElementById('cep');
+    const cepHelp = document.getElementById('cepHelp');
+
+    // Preenche os campos com localStorage quando abrir a página
+    window.addEventListener('load', () => {
+      const campos = ['nome','telefone','cep','numero','rua','bairro','cidade','complemento','referencia'];
+      campos.forEach(campo => {
+        const valor = localStorage.getItem(campo);
+        if (valor) {
+          document.getElementById(campo).value = valor;
+        }
+      });
+    });
+
+    // Função para limpar endereço (rua, bairro, cidade) caso CEP inválido
+    function limparEndereco() {
+      ['rua', 'bairro', 'cidade'].forEach(id => {
+        const campo = document.getElementById(id);
+        campo.value = '';
+        campo.disabled = false;
+      });
+    }
+
+    // Função para preencher endereço com dados do ViaCEP
+    function preencherEndereco(dados) {
+      if (!dados.erro) {
+        document.getElementById('rua').value = dados.logradouro || '';
+        document.getElementById('bairro').value = dados.bairro || '';
+        document.getElementById('cidade').value = dados.localidade || '';
+      } else {
+        limparEndereco();
+        alert('CEP não encontrado. Por favor, verifique e tente novamente.');
+      }
+    }
+
+    // Event listener para o campo CEP: quando perde o foco, busca endereço
+    cepInput.addEventListener('blur', () => {
+      let cep = cepInput.value.replace(/\D/g, '');
+      if (cep.length === 8) {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+          .then(response => response.json())
+          .then(data => preencherEndereco(data))
+          .catch(() => {
+            limparEndereco();
+            alert('Não foi possível buscar o CEP no momento.');
+          });
+      } else if (cep.length > 0) {
+        limparEndereco();
+        alert('CEP inválido. Deve conter 8 números.');
+      }
+    });
+
+    // Link "Não sei meu CEP" abre site oficial dos Correios em nova aba
+    cepHelp.addEventListener('click', () => {
+      window.open('https://buscacepinter.correios.com.br/app/endereco/index.php', '_blank');
+    });
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const campos = ['nome','telefone','cep','numero','rua','bairro','cidade','complemento','referencia'];
+      let todosPreenchidos = true;
+
+      campos.forEach(campo => {
+        const val = document.getElementById(campo).value.trim();
+        if (!['complemento','referencia'].includes(campo)) {
+          if (!val) todosPreenchidos = false;
+        }
+        localStorage.setItem(campo, val);
+      });
+
+      if (!todosPreenchidos) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+      }
+
+      // Exibe modal
+      modalOverlay.setAttribute('aria-hidden', 'false');
+      modalOverlay.classList.add('show');
+
+      // Desabilita interação com o formulário enquanto modal estiver aberto
+      form.style.pointerEvents = 'none';
+      form.style.opacity = '0.6';
+    });
+
+    // Fecha modal quando clicar no X
+    btnCloseModal.addEventListener('click', () => {
+      modalOverlay.classList.remove('show');
+      modalOverlay.setAttribute('aria-hidden', 'true');
+      form.style.pointerEvents = 'auto';
+      form.style.opacity = '1';
+    });
+
+    // Voltar para index.html
+    btnVoltarIndex.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

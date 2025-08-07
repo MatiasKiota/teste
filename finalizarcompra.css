@@ -1,0 +1,117 @@
+body {
+  font-family: Arial, sans-serif;
+  background: url('https://img.freepik.com/vector-gratis/fondo-textura-acuarela-color-pastel-suave_1017-39359.jpg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  background-color: rgba(255,255,255,0.9);
+  max-width: 450px;
+  margin: 40px auto;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #b85c8c;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="tel"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 6px;
+  border: 1.8px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+fieldset {
+  border: none;
+  margin-top: 15px;
+}
+
+legend {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #b85c8c;
+}
+
+input[type="radio"] {
+  margin-right: 6px;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  font-size: 18px;
+  background-color: #b85c8c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #9b4873;
+}
+
+#frete-info,
+#total-info,
+#subtotal {
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+#endereco-container label,
+#endereco-container input {
+  margin-top: 10px;
+}
+
+.voltar {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: none;
+  border: none;
+  font-size: 48px; /* maior e mais visível */
+  font-weight: bold;
+  color: #fff0f5; /* tom bem claro */
+  cursor: pointer;
+  z-index: 1000;
+  animation: brilhoSeta 1.5s infinite alternate;
+  text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4, 0 0 25px #ffaadd;
+  transition: transform 0.3s ease;
+}
+
+@keyframes brilhoSeta {
+  from {
+    transform: scale(1);
+    text-shadow: 0 0 10px #ff87c2, 0 0 18px #ff69b4;
+  }
+  to {
+    transform: scale(1.15);
+    text-shadow: 0 0 16px #ffaadd, 0 0 24px #ff69b4;
+  }
+}

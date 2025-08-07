@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1">
+  <title>🍬 Novos Doces - Mamis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    
+    /* Fundo com estrelas brilhantes suaves */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 200%; height: 200%;
+      background-image:
+        radial-gradient(2px 2px at 10px 20px, #fff 90%, transparent 100%),
+        radial-gradient(2px 2px at 50px 70px, #fff 90%, transparent 100%),
+        radial-gradient(2.5px 2.5px at 90px 100px, #fff 90%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 130px 150px, #fff 90%, transparent 100%);
+      background-repeat: repeat;
+      background-size: 40px 40px;
+      animation: glitter 3s linear infinite;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    @keyframes glitter {
+      0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+      100% { background-position: -80px -80px, -40px -40px, -60px -60px, -30px -30px; }
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #fff0f5, #ffe6f0);
+      padding: 40px 20px;
+      color: #4a004d;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #e60073;
+      text-shadow: 1px 1px 3px #ffcce0;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: 0 10px 20px rgba(255, 102, 153, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #e60073;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #b30059;
+      
+    }
+
+    .mensagem {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+
+    ul#listaProdutos {
+      text-align: left;
+      margin-top: 30px;
+      padding: 0;
+      list-style: none;
+    }
+
+    ul#listaProdutos li {
+      padding: 10px;
+      background: #ffe6f0;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+
+    .apagar-btn {
+      float: right;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+       margin-top: -4px; /* ⬅ Faz o botão subir */
+    }
+
+    .apagar-btn:hover {
+      background: #cc0000;
+    }
+    
+  </style>
+</head>
+
+<body>
+  
+  <h1>🍬 Cadastrar Novo Produto</h1>
+  <div class="container">
+    
+    <!-- ... (head e estilos iguais ao seu atual) -->
+<form id="formNovoProduto">
+  <div class="form-group">
+    <label for="nome">Nome do Doce ou Bebida:</label>
+    <input type="text" id="nome" required />
+  </div>
+
+  <div class="form-group">
+    <label for="preco">Preço (R$):</label>
+    <input type="text" id="preco" placeholder="Ex: 12,00" required />
+  </div>
+
+  <div class="form-group">
+    <label for="categoria">Categoria:</label>
+    <select id="categoria" required onchange="mostrarCampoCategoriaNova()">
+      <option value="">Selecione</option>
+      <option value="Mousses">Mousses</option>
+      <option value="Brownies">Brownies</option>
+      <option value="Bolo de Pote">Bolo de Pote</option>
+      <option value="Pudins e Frutas">Pudins e Frutas</option>
+      <option value="Suco Natural">Suco Natural</option>
+      <option value="Bebidas Geladas">Bebidas Geladas</option>
+      <option value="Outros">Outros</option>
+      <option value="__nova__">➕ Criar nova categoria</option>
+    </select>
+  </div>
+
+  <div class="form-group" id="novaCategoriaGroup" style="display: none;">
+    <label for="novaCategoria">Nova Categoria:</label>
+    <input type="text" id="novaCategoria" placeholder="Ex: Trufas" />
+  </div>
+
+  <div class="form-group">
+    <label for="imagem">Foto do Produto (opcional):</label>
+    <input type="file" id="imagem" accept="image/*" />
+  </div>
+
+  <button type="submit">Salvar Produto</button>
+  <div id="mensagemSucesso" class="mensagem"></div>
+</form>
+
+    <ul id="listaProdutos"></ul>
+  </div>
+
+  <script>
+    const form = document.getElementById("formNovoProduto");
+    const msg = document.getElementById("mensagemSucesso");
+    const listaProdutos = document.getElementById("listaProdutos");
+
+    function mostrarCampoCategoriaNova() {
+      const select = document.getElementById("categoria");
+      const novaGroup = document.getElementById("novaCategoriaGroup");
+      novaGroup.style.display = select.value === "__nova__" ? "block" : "none";
+    }
+
+    function atualizarLista() {
+      const produtos = JSON.parse(localStorage.getItem("produtos_mamis") || "[]");
+      listaProdutos.innerHTML = "";
+
+      if (produtos.length === 0) {
+        listaProdutos.innerHTML = "<li>Nenhum produto cadastrado ainda.</li>";
+        return;
+      }
+
+      produtos.forEach((produto, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <strong>${produto.nome}</strong> — R$ ${produto.preco} (${produto.categoria})
+          <button class="apagar-btn" onclick="removerProduto(${index})">🗑️ Apagar</button>
+        `;
+        listaProdutos.appendChild(li);
+      });
+    }
+
+    function removerProduto(index) {
+      let produtos = JSON.parse(localStorage.getItem("produtos_mamis") || "[]");
+      produtos.splice(index, 1);
+      localStorage.setItem("produtos_mamis", JSON.stringify(produtos));
+      atualizarLista();
+    }
+
+    form.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const nome = document.getElementById("nome").value.trim();
+  const preco = document.getElementById("preco").value.trim();
+  let categoria = document.getElementById("categoria").value;
+  const novaCategoria = document.getElementById("novaCategoria").value.trim();
+  const imagemInput = document.getElementById("imagem");
+
+  if (!nome || !preco || !categoria) {
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  if (categoria === "__nova__") {
+    if (!novaCategoria) {
+      alert("Digite o nome da nova categoria!");
+      return;
+    }
+    categoria = novaCategoria;
+  }
+
+  let imagemBase64 = "";
+
+  if (imagemInput.files.length > 0) {
+    const file = imagemInput.files[0];
+    imagemBase64 = await redimensionarImagem(file, 120, 120);
+  }
+
+  const novoProduto = { nome, preco, categoria, imagem: imagemBase64 };
+  let produtos = JSON.parse(localStorage.getItem("produtos_mamis") || "[]");
+  produtos.push(novoProduto);
+  localStorage.setItem("produtos_mamis", JSON.stringify(produtos));
+
+  msg.textContent = "Produto adicionado com sucesso!";
+  form.reset();
+  mostrarCampoCategoriaNova();
+  atualizarLista();
+
+  setTimeout(() => {
+    msg.textContent = "";
+  }, 3000);
+});
+function redimensionarImagem(file, largura, altura) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = largura;
+        canvas.height = altura;
+        const ctx = canvas.getContext("2d");
+
+        // Corta centralizado
+        const menorLado = Math.min(img.width, img.height);
+        const offsetX = (img.width - menorLado) / 2;
+        const offsetY = (img.height - menorLado) / 2;
+
+        ctx.drawImage(img, offsetX, offsetY, menorLado, menorLado, 0, 0, largura, altura);
+        resolve(canvas.toDataURL("image/jpeg", 0.8));
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+
+    atualizarLista();
+  </script>
+</body>
+</html>
+<a href="todos-pedidos.html">
+  <button style="background-color: #d23667; color: #ffffff; margin-top: 25px;">⭠ Voltar</button>
+</a>
