@@ -384,10 +384,22 @@ atualizarTextoBotao();
     listaPedidosDiv.classList.add("fade-in");
   }
 
-  carregarResumo();
+   carregarResumo();
+
+  // ⏱ Atualização automática a cada 5 segundos
+  setInterval(() => {
+    const dataSelecionada = seletorData.value || new Date().toISOString().split("T")[0];
+    carregarResumo(dataSelecionada);
+
+    // Se a lista do dia estiver visível, recarrega também
+    if (!listaPedidosDiv.classList.contains("escondido")) {
+      carregarPedidos(dataSelecionada);
+    }
+  }, 5000); // 5000 ms = 5 segundos
 
 </script>
 </body>
 </html>
+
 
 
